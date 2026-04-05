@@ -13,6 +13,8 @@ export default function App() {
   const [panelOpen, setPanelOpen] = useState(false)
   const [rpm, setRpm] = useState(33)
 
+  const audioRef = useRef(null)
+  const playTimeoutRef = useRef(null)
   const headerRef = useRef()
   const shelfRef = useRef()
   const { playSlide, playNeedleDrop, startCrackle, stopCrackle } = useSounds()
@@ -49,12 +51,30 @@ export default function App() {
     setPanelOpen(true)
     playNeedleDrop()
     startCrackle()
+
+    if (audioRef.current) {
+      const albumId = albums[selectedIndex].id
+      audioRef.current.src = `/music/${albumId}.mp3`
+      
+      clearTimeout(playTimeoutRef.current)
+      playTimeoutRef.current = setTimeout(() => {
+        if (audioRef.current) {
+          audioRef.current.play().catch(e => console.log('Audio playback failed or file missing:', e))
+        }
+      }, 600)
+    }
   }
 
   function handleEject() {
     setIsPlaying(false)
     setPanelOpen(false)
     stopCrackle()
+    
+    clearTimeout(playTimeoutRef.current)
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current.currentTime = 0
+    }
   }
 
   function handleRpmToggle(val) {
@@ -67,6 +87,7 @@ export default function App() {
       style={{ '--scene-glow': currentAlbum ? `${currentAlbum.color}20` : 'transparent' }}
     >
       <div className="app__glow" />
+      <audio ref={audioRef} />
 
       <header className="app__header" ref={headerRef}>
         <span className="app__header-name">Diego Pérez</span>

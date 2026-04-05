@@ -1,6 +1,7 @@
 import { useRef, useMemo, Suspense } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Environment, ContactShadows, PresentationControls } from '@react-three/drei'
+import * as THREE from 'three'
 import { TurntableModel } from './TurntableModel'
 import { VinylRecord } from './VinylRecord'
 
@@ -90,10 +91,18 @@ function SceneContents({ currentAlbum, isPlaying, rpm, onRpmToggle }) {
 
   // Camera eases in when playing
   useFrame((state) => {
-    const targetY = isPlaying ? 3.2 : 3.8
-    const targetZ = isPlaying ? 4.7 : 5.5
-    state.camera.position.y += (targetY - state.camera.position.y) * 0.016
-    state.camera.position.z += (targetZ - state.camera.position.z) * 0.016
+    const targetY = isPlaying ? 3.0 : 3.8
+    const targetZ = isPlaying ? 4.2 : 5.5
+    const targetCamX = isPlaying ? 2.2 : 1.5
+    const targetLookX = isPlaying ? 1.2 : 0
+
+    state.camera.position.x += (targetCamX - state.camera.position.x) * 0.02
+    state.camera.position.y += (targetY - state.camera.position.y) * 0.02
+    state.camera.position.z += (targetZ - state.camera.position.z) * 0.02
+
+    if (!state.camera.lookTarget) state.camera.lookTarget = new THREE.Vector3(0, 0, 0)
+    state.camera.lookTarget.x += (targetLookX - state.camera.lookTarget.x) * 0.02
+    state.camera.lookAt(state.camera.lookTarget.x, 0, 0)
   })
 
   return (
