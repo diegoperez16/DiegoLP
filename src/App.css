@@ -1,0 +1,112 @@
+/* ── Root ── */
+.app {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #080808;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── Album-color ambient glow ── */
+.app__glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 65% 55% at 52% 38%,
+    var(--scene-glow, transparent), transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+  transition: background 1.2s ease;
+}
+
+/* ── Header ── */
+.app__header {
+  position: absolute;
+  top: 20px;
+  right: 26px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  pointer-events: none;
+  gap: 2px;
+}
+
+.app__header-name {
+  font-size: 19px;
+  font-weight: 700;
+  color: #f0ece0;
+  letter-spacing: -0.025em;
+}
+
+.app__header-sub {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(240, 236, 224, 0.25);
+}
+
+/* ── 3D Canvas — fills remaining space, holds the panel as a child ── */
+.app__canvas {
+  flex: 1;
+  min-height: 0;
+  position: relative;   /* ContentPanel is absolute inside here */
+  overflow: hidden;     /* panel slides in/out cleanly */
+  z-index: 2;
+}
+
+/* ── Status label ── */
+.app__status {
+  position: absolute;
+  bottom: 16px;
+  left: 24px;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: rgba(240, 236, 224, 0.22);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  pointer-events: none;
+  transition: color 0.4s;
+  z-index: 5;
+}
+
+.app__status--on {
+  color: rgba(240, 236, 224, 0.5);
+}
+
+.app__status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: statusBlink 1.6s ease-in-out infinite;
+}
+
+@keyframes statusBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+/* ── Shelf strip — always above canvas z-stack, never covered ── */
+.app__shelf {
+  flex-shrink: 0;
+  background: #0a0a0a;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  z-index: 15;
+  position: relative;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .app__header { top: 14px; right: 16px; }
+  .app__header-name { font-size: 16px; }
+  .app__status { bottom: 10px; left: 14px; font-size: 8px; }
+}
+
+@media (max-height: 560px) {
+  .app__header-sub { display: none; }
+}

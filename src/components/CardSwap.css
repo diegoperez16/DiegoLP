@@ -1,0 +1,54 @@
+.cs-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  perspective: 900px;
+  transform-style: preserve-3d;
+}
+
+.cs-card-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200px;
+  height: 200px;
+  transform-style: preserve-3d;
+  will-change: transform;
+  cursor: pointer;
+  transform: translateZ(0);
+}
+
+.cs-card-wrapper:hover .cs-card {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.cs-card-wrapper.cs-active .cs-card {
+  border-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.3), 0 20px 60px rgba(0,0,0,0.7);
+}
+
+.cs-card {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+  position: relative;
+  transition: border-color 0.2s ease;
+}
+
+/* Vinyl peek-out at bottom of sleeve */
+.cs-vinyl-peek {
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #111 0%, #111 12%, transparent 12%),
+              repeating-radial-gradient(circle, #0a0a0a 0px, #0a0a0a 2px, #161616 2px, #161616 4px);
+  opacity: 0.85;
+  z-index: -1;
+  pointer-events: none;
+}

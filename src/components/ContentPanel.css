@@ -1,0 +1,291 @@
+/* ── Backdrop ── */
+.cp-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* ── Modal card — liner notes booklet ── */
+.cp-card {
+  width: 100%;
+  max-width: 560px;
+  max-height: 88%;
+  background: #f4efe2;
+  border-radius: 3px;
+  border: none;
+  box-shadow:
+    0 40px 100px rgba(0, 0, 0, 0.9),
+    0 0 0 1px rgba(0,0,0,0.18),
+    4px 4px 0 rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: #1e1512;
+  position: relative;
+}
+
+/* Colour stripe at top — album accent */
+.cp-stripe {
+  height: 4px;
+  flex-shrink: 0;
+}
+
+/* ── Red margin line (liner notes look) ── */
+.cp-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 52px;
+  bottom: 0;
+  width: 1.5px;
+  background: rgba(200, 60, 60, 0.45);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Lined paper background ── */
+.cp-tracks,
+.cp-body,
+.cp-header {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 23px,
+    rgba(100, 130, 200, 0.10) 23px,
+    rgba(100, 130, 200, 0.10) 24px
+  );
+}
+
+/* ── Header ── */
+.cp-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 22px 22px 14px 64px;
+  border-bottom: 1.5px solid rgba(200, 60, 60, 0.25);
+  gap: 12px;
+  flex-shrink: 0;
+  background-color: #f4efe2;
+}
+
+.cp-genre {
+  font-family: 'Space Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent, #7c3aed);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.cp-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 26px;
+  font-weight: 700;
+  font-style: italic;
+  color: #1e1512;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  margin: 0 0 5px;
+}
+
+.cp-meta {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: rgba(30, 21, 18, 0.42);
+  margin: 0;
+}
+
+.cp-close {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(30, 21, 18, 0.2);
+  background: rgba(30, 21, 18, 0.05);
+  color: rgba(30, 21, 18, 0.45);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+  margin-top: 2px;
+}
+.cp-close:hover {
+  background: rgba(30, 21, 18, 0.12);
+  color: #1e1512;
+}
+
+/* ── Body text ── */
+.cp-body {
+  padding: 14px 22px 0 64px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 12.5px;
+  color: rgba(30, 21, 18, 0.72);
+  line-height: 1.75;
+  white-space: pre-line;
+  flex-shrink: 0;
+  margin: 0;
+  background-color: #f4efe2;
+}
+
+/* ── Track list ── */
+.cp-tracks {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(30,21,18,0.15) transparent;
+  background-color: #f4efe2;
+}
+
+.cp-track {
+  display: grid;
+  grid-template-columns: 30px 1fr auto auto;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 22px 11px 64px;
+  border-bottom: 1px solid rgba(100, 130, 200, 0.10);
+  animation: trackIn 0.35s ease both;
+  cursor: default;
+  transition: background 0.14s;
+  position: relative;
+}
+.cp-track--expandable {
+  cursor: pointer;
+}
+.cp-track:hover {
+  background: rgba(30, 21, 18, 0.035);
+}
+.cp-track--open {
+  background: rgba(30, 21, 18, 0.03);
+  border-bottom-color: transparent;
+}
+
+@keyframes trackIn {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.cp-track-n {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 11px;
+  font-style: italic;
+  color: rgba(30, 21, 18, 0.32);
+  text-align: center;
+}
+
+.cp-track-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cp-track-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e1512;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cp-track-chevron {
+  font-size: 10px;
+  color: var(--accent, #7c3aed);
+  opacity: 0.5;
+  transition: opacity 0.15s;
+  line-height: 1;
+  justify-self: end;
+}
+.cp-track--open .cp-track-chevron { opacity: 0.85; }
+
+.cp-track-dur {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--accent, #7c3aed);
+  opacity: 0.65;
+  white-space: nowrap;
+}
+
+.cp-track-link {
+  font-size: 12px;
+  color: var(--accent, #7c3aed);
+  opacity: 0.55;
+  text-decoration: none;
+  margin-left: 4px;
+  transition: opacity 0.14s;
+}
+.cp-track-link:hover { opacity: 1; }
+
+/* ── Expandable track detail ── */
+.cp-track-expand {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  padding: 0 22px 0 94px;
+  border-bottom: 1px solid rgba(100, 130, 200, 0.10);
+  background: #f4efe2;
+}
+
+.cp-track-expand--open {
+  max-height: 140px;
+  padding: 10px 22px 14px 94px;
+}
+
+.cp-track-expand-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  line-height: 1.8;
+  color: rgba(30, 21, 18, 0.55);
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/* ── Footer ── */
+.cp-footer {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 22px 11px 64px;
+  border-top: 1.5px solid rgba(200, 60, 60, 0.2);
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: rgba(30, 21, 18, 0.3);
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+  background: #ede8d8;
+}
+
+.cp-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: dotPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes dotPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .cp-backdrop { padding: 14px; }
+  .cp-title { font-size: 20px; }
+  .cp-header,
+  .cp-body,
+  .cp-track,
+  .cp-track-expand { padding-left: 18px; }
+  .cp-card::before { display: none; }
+}

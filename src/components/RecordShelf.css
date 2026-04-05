@@ -1,0 +1,338 @@
+/* ═══════════════════════════════════════════════
+   SHELF
+═══════════════════════════════════════════════ */
+.shelf {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.shelf__rail {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 24px;
+}
+
+/* Wood plank at the base of the shelf */
+.shelf__wood {
+  position: absolute;
+  bottom: -7px;
+  left: 0;
+  right: 0;
+  height: 9px;
+  background: linear-gradient(180deg, #3d2a14 0%, #1e1409 55%, #0e0b05 100%);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,210,120,0.07);
+  z-index: 0;
+}
+
+/* ═══════════════════════════════════════════════
+   RECORDS ROW
+═══════════════════════════════════════════════ */
+.shelf__records {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 14px;
+  padding: 20px 0 14px;
+  position: relative;
+  z-index: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+  perspective: 1200px;
+  perspective-origin: 50% 120%;
+}
+.shelf__records::-webkit-scrollbar { display: none; }
+
+/* ═══════════════════════════════════════════════
+   SINGLE RECORD BUTTON
+═══════════════════════════════════════════════ */
+.shelf__record {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  transform-origin: bottom center;
+  will-change: transform;
+  transform-style: preserve-3d;
+}
+
+/* ═══════════════════════════════════════════════
+   LP LAYOUT  (sleeve 110px + disc peek 26px = 136px wide)
+═══════════════════════════════════════════════ */
+.shelf__lp {
+  position: relative;
+  width: 136px;
+  height: 110px;
+  flex-shrink: 0;
+}
+
+/* ── Vinyl disc — behind the sleeve ── */
+.shelf__disc {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  z-index: 1;
+
+  /*
+    Layered radial gradients from top to bottom:
+    1. Centre spindle hole (black)
+    2. Label circle (album colour)
+    3. Dead-wax ring (near-black)
+    4. Grooves (repeating dark/lighter bands)
+  */
+  background:
+    radial-gradient(circle at 50% 50%, #000 0%, #000 5.2%, transparent 5.2%),
+    radial-gradient(circle at 50% 50%, var(--c) 0%, var(--a) 20%, transparent 22%),
+    radial-gradient(circle at 50% 50%, transparent 22%, #0b0b12 22%, #0b0b12 27%, transparent 27%),
+    repeating-radial-gradient(circle at 50% 50%,
+      #060608 0px, #060608 1.2px,
+      #111118 1.2px, #111118 2.6px,
+      #08080f 2.6px, #08080f 3.5px
+    );
+
+  box-shadow:
+    5px 0 20px rgba(0,0,0,0.92),
+    -2px 0 6px rgba(0,0,0,0.5),
+    inset 0 0 0 1px rgba(255,255,255,0.04);
+  overflow: hidden;
+}
+
+/* Shimmer highlight on the vinyl */
+.shelf__disc::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(130deg,
+    rgba(255,255,255,0.09) 0%,
+    transparent 38%,
+    rgba(160,140,100,0.05) 65%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+/* ── Sleeve — front cover, in front of disc ── */
+.shelf__sleeve {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 110px;
+  height: 110px;
+  border-radius: 5px;
+  overflow: hidden;
+  z-index: 2;
+
+  border: 1px solid rgba(255,255,255,0.07);
+  box-shadow:
+    0 6px 24px rgba(0,0,0,0.7),
+    0 1px 0 rgba(255,255,255,0.05) inset;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.shelf__record:hover .shelf__sleeve {
+  border-color: rgba(255,255,255,0.2);
+  box-shadow:
+    0 10px 36px rgba(0,0,0,0.8),
+    0 1px 0 rgba(255,255,255,0.08) inset;
+}
+
+.shelf__record--selected .shelf__sleeve {
+  border-color: rgba(255,255,255,0.38);
+  box-shadow:
+    0 12px 44px rgba(0,0,0,0.88),
+    0 0 0 2px rgba(255,255,255,0.22),
+    0 1px 0 rgba(255,255,255,0.1) inset;
+}
+
+/* Gloss sheen over the cover art */
+.shelf__sleeve-gloss {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.12) 0%,
+    transparent 46%,
+    rgba(0,0,0,0.12) 100%
+  );
+  pointer-events: none;
+}
+
+/* Thin dark right edge — simulates cardboard sleeve thickness */
+.shelf__sleeve-edge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 3px;
+  height: 100%;
+  opacity: 0.55;
+  filter: brightness(0.4);
+}
+
+/* Now-playing indicator dot */
+.shelf__dot {
+  position: absolute;
+  top: 6px;
+  right: 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  animation: dotPulse 1.4s ease-in-out infinite;
+  box-shadow: 0 0 8px currentColor;
+}
+
+@keyframes dotPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.35; transform: scale(0.65); }
+}
+
+/* ── Text label below LP ── */
+.shelf__label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  padding-left: 2px;
+  max-width: 136px;
+}
+
+.shelf__label-genre {
+  font-family: 'Space Mono', monospace;
+  font-size: 7.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(240,236,224,0.27);
+  display: block;
+}
+
+.shelf__label-title {
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(240,236,224,0.52);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 136px;
+  display: block;
+  transition: color 0.2s;
+}
+
+.shelf__record--selected .shelf__label-title {
+  color: #f0ece0;
+}
+
+/* ═══════════════════════════════════════════════
+   CONTROLS BAR
+═══════════════════════════════════════════════ */
+.shelf__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 28px 17px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  gap: 16px;
+  min-height: 58px;
+}
+
+.shelf__hint {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: rgba(240,236,224,0.18);
+  letter-spacing: 0.07em;
+  flex: 1;
+}
+
+.shelf__now {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
+}
+
+.shelf__now-genre {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(240,236,224,0.35);
+}
+
+.shelf__now-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #f0ece0;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.shelf__now-rpm {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: rgba(240,236,224,0.28);
+}
+
+/* ── Play / Eject button ── */
+.shelf__btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border-radius: 50px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.05);
+  color: #f0ece0;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s, border-color 0.2s, box-shadow 0.2s;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.shelf__btn:hover {
+  background: var(--c, rgba(255,255,255,0.12));
+  border-color: var(--a, rgba(255,255,255,0.3));
+  transform: scale(1.04);
+  box-shadow: 0 0 16px var(--a, transparent);
+}
+
+.shelf__btn--ejecting {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.18);
+}
+
+.shelf__btn--ejecting:hover {
+  background: rgba(200,40,40,0.22);
+  border-color: rgba(255,80,80,0.45);
+  box-shadow: 0 0 16px rgba(220,50,50,0.3);
+}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════ */
+@media (max-width: 620px) {
+  .shelf__rail   { padding: 0 12px; }
+  .shelf__records { gap: 8px; }
+  .shelf__lp     { width: 112px; height: 90px; }
+  .shelf__sleeve { width: 90px; height: 90px; }
+  .shelf__sleeve svg { width: 90px !important; height: 90px !important; }
+  .shelf__disc   { width: 90px; height: 90px; }
+  .shelf__controls { padding: 10px 16px 14px; }
+}

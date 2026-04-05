@@ -1,0 +1,85 @@
+.album-cover {
+  width: 200px;
+  height: 200px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  overflow: visible;
+  transition: transform 0.2s ease;
+}
+
+.album-cover__art {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.album-art-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Gloss sheen overlay */
+.album-cover__sheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    transparent 50%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
+  pointer-events: none;
+}
+
+/* Label bar at bottom of art */
+.album-cover__info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px 10px;
+  background: linear-gradient(to top, rgba(0,0,0,0.88) 60%, transparent 100%);
+  border-radius: 0 0 8px 8px;
+}
+
+.album-cover__genre {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(240, 236, 224, 0.5);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.album-cover__title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #f0ece0;
+  line-height: 1.2;
+  margin-bottom: 1px;
+}
+
+.album-cover__artist {
+  font-size: 9px;
+  color: rgba(240, 236, 224, 0.55);
+  font-family: 'Space Mono', monospace;
+}
+
+.album-cover__year {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: rgba(240, 236, 224, 0.35);
+  display: block;
+  margin-top: 2px;
+}
+
+.album-cover--selected .album-cover__art {
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.5), 0 0 20px rgba(255,255,255,0.15);
+}
