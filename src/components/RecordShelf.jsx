@@ -275,18 +275,66 @@ export function RecordShelf({ albums, selectedIndex, onSelect, isPlaying, onPlay
   const refs = useRef([])
 
   /* Lift selected record */
+  /* Lift selected record & manage disc/sleeve visibility */
   useEffect(() => {
     albums.forEach((_, i) => {
       const el = refs.current[i]
       if (!el) return
-      gsap.to(el, {
-        y: i === selectedIndex ? -18 : 0,
-        scale: i === selectedIndex ? 1.04 : 1,
-        duration: 0.45,
-        ease: 'power3.out',
-      })
+      
+      const isSelected = i === selectedIndex
+      const isPlayingSelected = isSelected && isPlaying
+
+      // Main record wrapper flies away and collapses when playing
+      if (isPlayingSelected) {
+        gsap.to(el, {
+          y: -120, // Fly up
+          opacity: 0,
+          scale: 0.8,
+          width: 0,
+          marginRight: -14, // Counteract the flex gap
+          overflow: 'hidden',
+          duration: 0.6,
+          ease: 'power3.inOut',
+          pointerEvents: 'none'
+        })
+      } else {
+        gsap.to(el, {
+          y: isSelected ? -18 : 0,
+          opacity: 1,
+          scale: isSelected ? 1.04 : 1,
+          width: 136, 
+          marginRight: 0,
+          duration: 0.4,
+          ease: 'power3.out',
+          pointerEvents: 'auto',
+          clearProps: isSelected ? 'overflow' : 'width,marginRight,overflow'
+        })
+      }
+
+      // Disc slides out when selected (moves to turntable), standard stick-out when not
+      const disc = el.querySelector('.shelf__disc')
+      if (disc) {
+        if (isSelected) {
+          gsap.to(disc, {
+            x: 60,
+            opacity: 0,
+            duration: 0.35,
+            ease: 'power2.in',
+            overwrite: 'auto'
+          })
+        } else {
+          gsap.to(disc, {
+            x: 0,
+            opacity: 1,
+            duration: 0.45,
+            ease: 'power2.out',
+            overwrite: 'auto',
+            clearProps: 'x'
+          })
+        }
+      }
     })
-  }, [selectedIndex, albums])
+  }, [selectedIndex, albums, isPlaying])
 
   /* Crate digging: push apart on hover */
   const handleEnter = useCallback((hoveredIndex) => {
@@ -295,9 +343,11 @@ export function RecordShelf({ albums, selectedIndex, onSelect, isPlaying, onPlay
       if (!el) return
       const dist = i - hoveredIndex
       const isSelected = i === selectedIndex
+      const isPlayingSelected = isSelected && isPlaying
+
+      if (isPlayingSelected) return // Ignore hovered updates for playing record
 
       if (dist === 0) {
-        // The hovered record lifts up more (unless already selected and lifted higher)
         gsap.to(el, {
           y: isSelected ? -22 : -12,
           scale: isSelected ? 1.07 : 1.03,
@@ -306,7 +356,6 @@ export function RecordShelf({ albums, selectedIndex, onSelect, isPlaying, onPlay
           ease: 'power2.out',
         })
       } else {
-        // Neighbours push outward + tilt away
         const pushX = Math.sign(dist) * Math.min(Math.abs(dist) * 5, 20)
         const tiltZ = Math.sign(dist) * Math.min(Math.abs(dist) * 1.8, 6)
         gsap.to(el, {
@@ -319,12 +368,14 @@ export function RecordShelf({ albums, selectedIndex, onSelect, isPlaying, onPlay
         })
       }
     })
-  }, [albums, selectedIndex])
+  }, [albums, selectedIndex, isPlaying])
 
   const handleLeave = useCallback(() => {
     albums.forEach((_, i) => {
       const el = refs.current[i]
       if (!el) return
+      if (i === selectedIndex && isPlaying) return // don't restore it
+
       gsap.to(el, {
         x: 0,
         rotationZ: 0,
@@ -334,7 +385,7 @@ export function RecordShelf({ albums, selectedIndex, onSelect, isPlaying, onPlay
         ease: 'elastic.out(1, 0.6)',
       })
     })
-  }, [albums, selectedIndex])
+  }, [albums, selectedIndex, isPlaying])
 
   const selected = selectedIndex !== null ? albums[selectedIndex] : null
 

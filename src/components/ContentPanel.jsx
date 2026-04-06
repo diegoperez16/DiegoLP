@@ -38,12 +38,17 @@ export function ContentPanel({ album, isOpen, onClose }) {
       <div
         ref={cardRef}
         className="cp-card"
-        style={album ? { '--accent': album.accentColor, '--album-color': album.color } : {}}
+        style={album ? { 
+          '--accent': album.accentColor, 
+          '--album-color': album.color,
+          '--gradientA': album.gradientA,
+          '--gradientB': album.gradientB
+        } : {}}
         onClick={e => e.stopPropagation()}
       >
+        <div className="cp-ring-texture" />
         {album && content && (
           <>
-            <div className="cp-stripe" style={{ background: `linear-gradient(90deg, ${album.gradientA}, ${album.gradientB})` }} />
 
             <div className="cp-header">
               <div>
@@ -104,10 +109,16 @@ export function ContentPanel({ album, isOpen, onClose }) {
                 )
               })}
             </div>
+            {/* SoundCloud player moved out */}
 
             <div className="cp-footer">
-              <span className="cp-dot" style={{ background: album.accentColor }} />
-              <span>Now playing · click outside to eject</span>
+              <div className="cp-footer-left">
+                <span className="cp-dot" style={{ background: album.accentColor }} />
+                <span>Stereo · 33⅓ RPM · LP</span>
+              </div>
+              <div className="cp-barcode">
+                <span>|| ||||| || ||| || |||</span>
+              </div>
             </div>
           </>
         )}
