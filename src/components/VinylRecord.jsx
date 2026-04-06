@@ -68,21 +68,45 @@ function darken(hex, pct) {
   return `rgb(${Math.max(0,((n>>16)&255)-pct)},${Math.max(0,((n>>8)&255)-pct)},${Math.max(0,(n&255)-pct)})`
 }
 
-/* ── Component ───────────────────────────────────────────────────── */
-export function VinylRecord({ isPlaying, albumColor = '#7c3aed', customCoverUrl, rpm = 33, position = [0, 0, 0] }) {
-  const groupRef = useRef()
-  const speedRef = useRef(0)
-  const scratchingRef = useRef(false)
-  const scratchStartX = useRef(0)
+/* ── Animation phases ────────────────────────────────────────────── */
+const PHASE_ENTERING = 'entering'
+const PHASE_IDLE     = 'idle'
+const PHASE_EJECTING = 'ejecting'
+
+export function VinylRecord({ isPlaying, albumColor = '#7c3aed', customCoverUrl, rpm = 33, position = [0, 0, 0], isEjecting = false, instant = false }) {
+  const groupRef    = useRef()
+  const animRef     = useRef()
+  const speedRef    = useRef(0)
+  const scratchingRef     = useRef(false)
+  const scratchStartX     = useRef(0)
   const scratchStartAngle = useRef(0)
+
+  // Animation state — instant skips entry animation (classic mode)
+  const phaseRef = useRef(instant ? PHASE_IDLE : PHASE_ENTERING)
+  const animT    = useRef(instant ? 1 : 0)
+
+  // instant: position is never set by the entry animation, so seed it on mount
+  useEffect(() => {
+    if (instant && animRef.current) {
+      const [px, py, pz] = position
+      animRef.current.position.set(px, py, pz)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const [pictureTex, setPictureTex] = useState(null)
 
+  // Start eject animation when prop flips
   useEffect(() => {
-    if (!customCoverUrl) {
-      setPictureTex(null)
-      return
+    if (isEjecting) {
+      phaseRef.current = PHASE_EJECTING
+      animT.current = 0
+      speedRef.current = 0
     }
+  }, [isEjecting])
+
+  useEffect(() => {
+    if (!customCoverUrl) { setPictureTex(null); return }
     const loader = new THREE.TextureLoader()
     loader.setCrossOrigin('anonymous')
     loader.load(customCoverUrl, (tex) => {
@@ -99,9 +123,9 @@ export function VinylRecord({ isPlaying, albumColor = '#7c3aed', customCoverUrl,
     return tex
   }, [albumColor])
 
-  // ── Scratch: register global pointer listeners ────────────────
+  // ── Scratch listeners ────────────────────────────────────────────
   function onScratchDown(e) {
-    e.stopPropagation()  // prevent PresentationControls from capturing
+    e.stopPropagation()
     scratchingRef.current = true
     scratchStartX.current = e.clientX ?? e.touches?.[0]?.clientX ?? 0
     scratchStartAngle.current = groupRef.current?.rotation.y ?? 0
@@ -110,8 +134,7 @@ export function VinylRecord({ isPlaying, albumColor = '#7c3aed', customCoverUrl,
     const onMove = (ev) => {
       if (!scratchingRef.current || !groupRef.current) return
       const x = ev.clientX ?? ev.touches?.[0]?.clientX ?? 0
-      const dx = x - scratchStartX.current
-      groupRef.current.rotation.y = scratchStartAngle.current + dx * 0.03
+      groupRef.current.rotation.y = scratchStartAngle.current + (x - scratchStartX.current) * 0.03
     }
     const onUp = () => {
       scratchingRef.current = false
@@ -122,39 +145,83 @@ export function VinylRecord({ isPlaying, albumColor = '#7c3aed', customCoverUrl,
     window.addEventListener('pointerup', onUp)
   }
 
-  useEffect(() => () => {
-    // noop — listeners are cleaned up in closures above
-  }, [])
-
   useFrame((_, delta) => {
-    if (!groupRef.current || scratchingRef.current) return
-    const rpmScale = rpm === 45 ? 1.36 : 1   // 45/33 ≈ 1.36
-    const target = isPlaying ? 1.8 * rpmScale : 0
-    speedRef.current += (target - speedRef.current) * Math.min(delta * 1.6, 1)
-    groupRef.current.rotation.y += speedRef.current * delta
+    if (!animRef.current || !groupRef.current) return
+
+    const [px, py, pz] = position
+
+    // ── Entry animation: arc in from shelf direction (bottom-right) ──
+    if (phaseRef.current === PHASE_ENTERING) {
+      animT.current = Math.min(animT.current + delta * 1.4, 1)
+      const t = animT.current
+      // easeOutBack
+      const c1 = 1.70158, c3 = c1 + 1
+      const ease = 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2)
+
+      const startX = px + 3.5, startY = py - 2.0, startZ = pz + 2.5
+      animRef.current.position.set(
+        startX + (px - startX) * ease,
+        startY + (py - startY) * ease,
+        startZ + (pz - startZ) * ease
+      )
+      animRef.current.rotation.z = (Math.PI / 5) * (1 - ease)
+      animRef.current.rotation.x = (Math.PI / 8) * (1 - ease)
+
+      if (animT.current >= 1) {
+        phaseRef.current = PHASE_IDLE
+        animRef.current.position.set(px, py, pz)
+        animRef.current.rotation.set(0, 0, 0)
+      }
+      return
+    }
+
+    // ── Eject animation: lift and fly off screen ──────────────────
+    if (phaseRef.current === PHASE_EJECTING) {
+      animT.current = Math.min(animT.current + delta * 1.3, 1)
+      const t = animT.current
+      const ease = t * t  // easeInQuad
+
+      animRef.current.position.set(
+        px + ease * 4.5,
+        py + ease * 3.0,
+        pz + ease * 1.5
+      )
+      animRef.current.rotation.z = ease * (Math.PI / 5)
+      animRef.current.rotation.x = -ease * (Math.PI / 10)
+      return
+    }
+
+    // ── Idle / playing: just spin ─────────────────────────────────
+    if (!scratchingRef.current) {
+      const rpmScale = rpm === 45 ? 1.36 : 1
+      const target   = isPlaying ? 1.8 * rpmScale : 0
+      speedRef.current += (target - speedRef.current) * Math.min(delta * 1.6, 1)
+      groupRef.current.rotation.y += speedRef.current * delta
+    }
   })
 
   return (
-    <group ref={groupRef} position={position}>
-      {/* Main disc — clearcoat lacquer via MeshPhysicalMaterial */}
-      <mesh receiveShadow castShadow onPointerDown={onScratchDown} cursor="grab">
-        <cylinderGeometry args={[1.42, 1.42, 0.038, 128]} />
-        <meshPhysicalMaterial
-          map={pictureTex || texture}
-          roughness={0.28}
-          metalness={0.06}
-          clearcoat={0.9}
-          clearcoatRoughness={0.12}
-          reflectivity={0.7}
-          envMapIntensity={0.55}
-        />
-      </mesh>
+    <group ref={animRef}>
+      <group ref={groupRef}>
+        <mesh receiveShadow castShadow onPointerDown={onScratchDown} cursor="grab">
+          <cylinderGeometry args={[1.42, 1.42, 0.038, 128]} />
+          <meshPhysicalMaterial
+            map={pictureTex || texture}
+            roughness={0.28}
+            metalness={0.06}
+            clearcoat={0.9}
+            clearcoatRoughness={0.12}
+            reflectivity={0.7}
+            envMapIntensity={0.55}
+          />
+        </mesh>
 
-      {/* Chrome edge ring */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[1.42, 0.018, 24, 128]} />
-        <meshStandardMaterial color="#1c1c22" roughness={0.18} metalness={0.85} envMapIntensity={0.4} />
-      </mesh>
+        {/* Chrome edge ring */}
+        <mesh rotation={[-Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[1.42, 0.018, 24, 128]} />
+          <meshStandardMaterial color="#1c1c22" roughness={0.18} metalness={0.85} envMapIntensity={0.4} />
+        </mesh>
+      </group>
     </group>
   )
 }

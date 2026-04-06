@@ -4,20 +4,89 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #080808;
+  background: radial-gradient(ellipse at bottom, #161129 0%, #050508 100%);
   overflow: hidden;
   position: relative;
+}
+
+/* Base floating particles/ambience */
+.app::before {
+  content: "";
+  position: absolute;
+  inset: -100%;
+  background: 
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 40%),
+    radial-gradient(circle at 10% 90%, rgba(255, 255, 255, 0.015) 0%, transparent 30%),
+    radial-gradient(circle at 90% 10%, rgba(255, 255, 255, 0.02) 0%, transparent 40%);
+  animation: bgDrift 30s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes bgDrift {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.2); }
+  100% { transform: rotate(360deg) scale(1); }
 }
 
 /* ── Album-color ambient glow ── */
 .app__glow {
   position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse 65% 55% at 52% 38%,
+  inset: -50%;
+  background: radial-gradient(ellipse 65% 55% at 50% 50%,
     var(--scene-glow, transparent), transparent 70%);
   pointer-events: none;
   z-index: 1;
   transition: background 1.2s ease;
+  animation: pulseGlow 10s ease-in-out infinite alternate;
+  mix-blend-mode: screen;
+}
+
+.app__glow::before,
+.app__glow::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  transition: background-color 1.2s ease;
+  background-color: var(--scene-color, transparent);
+  filter: blur(140px);
+  opacity: 0.2;
+}
+
+.app__glow::before {
+  width: 60vw;
+  height: 60vh;
+  top: 10%;
+  left: -5%;
+  animation: floatOrb 20s ease-in-out infinite alternate;
+}
+
+.app__glow::after {
+  width: 50vw;
+  height: 50vh;
+  bottom: -10%;
+  right: -5%;
+  animation: floatOrbReverse 25s ease-in-out infinite alternate;
+}
+
+@keyframes pulseGlow {
+  0% { transform: scale(1) translate(0, 0); opacity: 0.8; }
+  100% { transform: scale(1.05) translate(-2%, 2%); opacity: 1; }
+}
+
+@keyframes floatOrb {
+  0% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(15%, 10%) scale(1.1); }
+  66% { transform: translate(-5%, -15%) scale(0.9); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+@keyframes floatOrbReverse {
+  0% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-15%, -10%) scale(1.1); }
+  66% { transform: translate(5%, 15%) scale(0.95); }
+  100% { transform: translate(0, 0) scale(1); }
 }
 
 /* ── Header ── */
@@ -94,7 +163,7 @@
 /* ── Shelf strip — always above canvas z-stack, never covered ── */
 .app__shelf {
   flex-shrink: 0;
-  background: #0a0a0a;
+  background: transparent;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   z-index: 15;
   position: relative;
@@ -127,6 +196,41 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 12px;
+}
+
+.mode-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 50px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.05);
+  color: #f0ece0;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  white-space: nowrap;
+}
+
+.mode-toggle-btn:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.3);
+}
+
+.mode-toggle-btn--active {
+  background: rgba(124, 58, 237, 0.25);
+  border-color: rgba(124, 58, 237, 0.6);
+  color: #c4b5fd;
+}
+
+.mode-toggle-btn--active:hover {
+  background: rgba(124, 58, 237, 0.35);
+  border-color: rgba(124, 58, 237, 0.8);
 }
 
 .music-widget__toggle, .jukebox-toggle-btn {
@@ -255,3 +359,44 @@
   .jukebox-np-title { max-width: 100px; font-size: 13px; }
   .jukebox-btn { padding: 6px 14px; font-size: 12px; }
 }
+
+/* ── Shooting Stars (La La Land effect) ── */
+.shooting-star {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120px;
+  height: 2px;
+  background: linear-gradient(-45deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+  filter: drop-shadow(0 0 6px #fff);
+  animation: shooting 7s linear infinite;
+  opacity: 0;
+  transform: rotate(-35deg) translateX(-100px);
+  pointer-events: none;
+  /* Below the canvas (z-index: 2) so stars are always in the background */
+  z-index: 1;
+}
+
+.shooting-star::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  right: 0;
+  width: 18px;
+  height: 4px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 14px 4px rgba(255, 255, 255, 0.9);
+}
+
+@keyframes shooting {
+  0% { transform: rotate(-35deg) translateX(-60vw); opacity: 0; }
+  5% { opacity: 1; }
+  12% { transform: rotate(-35deg) translateX(60vw); opacity: 0; }
+  100% { transform: rotate(-35deg) translateX(60vw); opacity: 0; }
+}
+
+.shooting-star[data-s="1"] { top: 15%; left: 30%; animation-delay: 2.2s;  animation-duration: 9s;  transform: rotate(-40deg); }
+.shooting-star[data-s="2"] { top: 60%; left: 70%; animation-delay: 5.8s;  animation-duration: 8s;  transform: rotate(-30deg); }
+.shooting-star[data-s="3"] { top: 5%;  left: 80%; animation-delay: 1.4s;  animation-duration: 11s; transform: rotate(-35deg); }
+.shooting-star[data-s="4"] { top: 40%; left: 10%; animation-delay: 8.4s;  animation-duration: 12s; transform: rotate(-45deg); }

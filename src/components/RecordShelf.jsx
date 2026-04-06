@@ -1,5 +1,5 @@
-import { useRef, useEffect, useCallback } from 'react'
-import { gsap } from 'gsap'
+import { useRef, useState, useEffect } from 'react'
+import CardSwap, { Card } from './CardSwap'
 import './RecordShelf.css'
 
 /* ── Album art SVGs with gritty textures ── */
@@ -238,177 +238,143 @@ function AlbumArt({ album, size = 110 }) {
 }
 
 /* ── LP record item ── */
-function LPRecord({ album, isSelected, isPlaying, onClick, onMouseEnter, elRef }) {
-  return (
-    <button
-      ref={elRef}
-      className={`shelf__record ${isSelected ? 'shelf__record--selected' : ''}`}
-      onClick={onClick}
-      onMouseEnter={onMouseEnter}
-      aria-label={`Select ${album.title}`}
-    >
-      <div className="shelf__lp">
-        <div
-          className="shelf__disc"
-          style={{ '--c': album.color, '--a': album.accentColor }}
-        />
-        <div className="shelf__sleeve">
-          <AlbumArt album={album} size={110} />
-          <div className="shelf__sleeve-gloss" />
-          <div className="shelf__sleeve-edge" style={{ background: album.gradientA }} />
-          {isSelected && isPlaying && (
-            <div className="shelf__dot" style={{ background: album.accentColor }} />
-          )}
-        </div>
-      </div>
+function LPRecord({ album, isSelected, isPlaying, discOnPlatter, isEjecting, onPlace }) {
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
+  const [isDragging, setIsDragging] = useState(false)
+  
+  const isReadyToGrab = isSelected && !discOnPlatter && !isEjecting
 
-      <div className="shelf__label">
-        <span className="shelf__label-genre">{album.genre}</span>
-        <span className="shelf__label-title">{album.title}</span>
+  useEffect(() => {
+    if (!isReadyToGrab) {
+      setDragOffset({ x: 0, y: 0 })
+      setIsDragging(false)
+    }
+  }, [isReadyToGrab])
+
+  function handlePointerDown(e) {
+    if (!isReadyToGrab) return
+    e.stopPropagation()
+    if (e.target.setPointerCapture) e.target.setPointerCapture(e.pointerId)
+    setIsDragging(true)
+    
+    const startX = e.clientX ?? e.touches?.[0]?.clientX ?? 0
+    const startY = e.clientY ?? e.touches?.[0]?.clientY ?? 0
+    
+    function onPointerMove(ev) {
+      const x = ev.clientX ?? ev.touches?.[0]?.clientX ?? 0
+      const y = ev.clientY ?? ev.touches?.[0]?.clientY ?? 0
+      setDragOffset({ x: x - startX, y: y - startY })
+    }
+    
+    function onPointerUp(ev) {
+      window.removeEventListener('pointermove', onPointerMove)
+      window.removeEventListener('pointerup', onPointerUp)
+      window.removeEventListener('touchmove', onPointerMove)
+      window.removeEventListener('touchend', onPointerUp)
+      setIsDragging(false)
+      
+      const y = ev.clientY ?? ev.changedTouches?.[0]?.clientY ?? startY
+      // If dragged upwards by at least 70px towards the turntable, place it
+      if (y - startY < -70) {
+        onPlace?.()
+      }
+      setDragOffset({ x: 0, y: 0 })
+    }
+    
+    window.addEventListener('pointermove', onPointerMove)
+    window.addEventListener('pointerup', onPointerUp)
+    window.addEventListener('touchmove', onPointerMove, { passive: false })
+    window.addEventListener('touchend', onPointerUp)
+  }
+
+  return (
+    <div className="shelf__lp" style={{ width: 150, height: 150 }}>
+      {/* Draggable Disc */}
+      <div
+        className="shelf__disc"
+        onPointerDown={handlePointerDown}
+        onTouchStart={handlePointerDown}
+        style={{
+          width: 150, height: 150,
+          left: 0, top: 0, transformOrigin: 'center center',
+          '--c': album.color,
+          '--a': album.accentColor,
+          transform: isReadyToGrab 
+            ? `translate(${75 + dragOffset.x}px, ${dragOffset.y}px) rotate(${dragOffset.y * 0.15}deg) scale(0.95)`
+            : (isSelected ? 'scale(0)' : 'scale(0.95)'),
+          opacity: (isSelected && discOnPlatter) ? 0 : 1,
+          transition: isDragging ? 'none' : 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s',
+          cursor: isReadyToGrab ? (isDragging ? 'grabbing' : 'grab') : 'default',
+          zIndex: 0,
+          touchAction: 'none'
+        }}
+      />
+      <div className="shelf__sleeve" style={{ width: 150, height: 150, borderRadius: 5, position: 'relative', zIndex: 1 }}>
+        <AlbumArt album={album} size={150} />
+        <div className="shelf__sleeve-gloss" />
+        <div className="shelf__sleeve-edge" style={{ background: album.gradientA }} />
+        {/* Dot: pulsing when playing, static when disc is on platter but paused */}
+        {isSelected && discOnPlatter && isPlaying && (
+          <div className="shelf__dot" style={{ background: album.accentColor }} />
+        )}
+        {isSelected && discOnPlatter && !isPlaying && (
+          <div className="shelf__dot" style={{ background: album.accentColor, animation: 'none', opacity: 0.4 }} />
+        )}
       </div>
-    </button>
+      <div className="shelf__lp-name">{album.title}</div>
+    </div>
   )
 }
 
-/* ── Shelf ── */
-export function RecordShelf({ albums, selectedIndex, onSelect, isPlaying, onPlay, onEject }) {
-  const refs = useRef([])
-
-  /* Lift selected record */
-  /* Lift selected record & manage disc/sleeve visibility */
-  useEffect(() => {
-    albums.forEach((_, i) => {
-      const el = refs.current[i]
-      if (!el) return
-      
-      const isSelected = i === selectedIndex
-      const isPlayingSelected = isSelected && isPlaying
-
-      // Main record wrapper flies away and collapses when playing
-      if (isPlayingSelected) {
-        gsap.to(el, {
-          y: -120, // Fly up
-          opacity: 0,
-          scale: 0.8,
-          width: 0,
-          marginRight: -14, // Counteract the flex gap
-          overflow: 'hidden',
-          duration: 0.6,
-          ease: 'power3.inOut',
-          pointerEvents: 'none'
-        })
-      } else {
-        gsap.to(el, {
-          y: isSelected ? -18 : 0,
-          opacity: 1,
-          scale: isSelected ? 1.04 : 1,
-          width: 136, 
-          marginRight: 0,
-          duration: 0.4,
-          ease: 'power3.out',
-          pointerEvents: 'auto',
-          clearProps: isSelected ? 'overflow' : 'width,marginRight,overflow'
-        })
-      }
-
-      // Disc slides out when selected (moves to turntable), standard stick-out when not
-      const disc = el.querySelector('.shelf__disc')
-      if (disc) {
-        if (isSelected) {
-          gsap.to(disc, {
-            x: 60,
-            opacity: 0,
-            duration: 0.35,
-            ease: 'power2.in',
-            overwrite: 'auto'
-          })
-        } else {
-          gsap.to(disc, {
-            x: 0,
-            opacity: 1,
-            duration: 0.45,
-            ease: 'power2.out',
-            overwrite: 'auto',
-            clearProps: 'x'
-          })
-        }
-      }
-    })
-  }, [selectedIndex, albums, isPlaying])
-
-  /* Crate digging: push apart on hover */
-  const handleEnter = useCallback((hoveredIndex) => {
-    albums.forEach((_, i) => {
-      const el = refs.current[i]
-      if (!el) return
-      const dist = i - hoveredIndex
-      const isSelected = i === selectedIndex
-      const isPlayingSelected = isSelected && isPlaying
-
-      if (isPlayingSelected) return // Ignore hovered updates for playing record
-
-      if (dist === 0) {
-        gsap.to(el, {
-          y: isSelected ? -22 : -12,
-          scale: isSelected ? 1.07 : 1.03,
-          rotationZ: 0,
-          duration: 0.35,
-          ease: 'power2.out',
-        })
-      } else {
-        const pushX = Math.sign(dist) * Math.min(Math.abs(dist) * 5, 20)
-        const tiltZ = Math.sign(dist) * Math.min(Math.abs(dist) * 1.8, 6)
-        gsap.to(el, {
-          x: pushX,
-          rotationZ: tiltZ,
-          y: isSelected ? -18 : 0,
-          scale: isSelected ? 1.04 : 1,
-          duration: 0.35,
-          ease: 'power2.out',
-        })
-      }
-    })
-  }, [albums, selectedIndex, isPlaying])
-
-  const handleLeave = useCallback(() => {
-    albums.forEach((_, i) => {
-      const el = refs.current[i]
-      if (!el) return
-      if (i === selectedIndex && isPlaying) return // don't restore it
-
-      gsap.to(el, {
-        x: 0,
-        rotationZ: 0,
-        y: i === selectedIndex ? -18 : 0,
-        scale: i === selectedIndex ? 1.04 : 1,
-        duration: 0.55,
-        ease: 'elastic.out(1, 0.6)',
-      })
-    })
-  }, [albums, selectedIndex, isPlaying])
-
+/* ── Shelf using CardSwap ── */
+export function RecordShelf({ albums, selectedIndex, discOnPlatter, isEjecting, isPlaying, onSelect, onPlace, onEject, onPlay, simulatorMode = true }) {
   const selected = selectedIndex !== null ? albums[selectedIndex] : null
+  const swapRef  = useRef(null)
 
   return (
     <div className="shelf">
       <div className="shelf__rail">
-        <div className="shelf__wood" />
-        <div className="shelf__records" onMouseLeave={handleLeave}>
+        <CardSwap
+          ref={swapRef}
+          width={150}
+          height={150}
+          cardDistance={40}
+          verticalDistance={30}
+          delay={4000}
+          pauseOnHover={false}
+          isPaused={true}
+          onCardClick={(i) => onSelect(i)}
+          skewAmount={6}
+        >
           {albums.map((album, i) => (
-            <LPRecord
-              key={album.id}
-              album={album}
-              isSelected={i === selectedIndex}
-              isPlaying={isPlaying}
-              onClick={() => onSelect(i)}
-              onMouseEnter={() => handleEnter(i)}
-              elRef={el => { refs.current[i] = el }}
-            />
+            <Card key={album.id}>
+              <LPRecord
+                album={album}
+                isSelected={i === selectedIndex}
+                isPlaying={isPlaying}
+                discOnPlatter={discOnPlatter}
+                isEjecting={isEjecting}
+                onPlace={onPlace}
+              />
+            </Card>
           ))}
-        </div>
+        </CardSwap>
       </div>
 
       <div className="shelf__controls">
+        <div className="shelf__nav">
+          <button className="shelf__nav-btn" onClick={() => swapRef.current?.prev()} aria-label="Previous">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <button className="shelf__nav-btn" onClick={() => swapRef.current?.next()} aria-label="Next">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        </div>
+
         {selected ? (
           <>
             <div className="shelf__now">
@@ -416,16 +382,55 @@ export function RecordShelf({ albums, selectedIndex, onSelect, isPlaying, onPlay
               <span className="shelf__now-name">{selected.title}</span>
               <span className="shelf__now-rpm">{selected.rpm} RPM · {selected.year}</span>
             </div>
-            <button
-              className={`shelf__btn ${isPlaying ? 'shelf__btn--ejecting' : ''}`}
-              style={{ '--c': selected.color, '--a': selected.accentColor }}
-              onClick={isPlaying ? onEject : onPlay}
-            >
-              {isPlaying ? <><EjectSVG /> Eject</> : <><PlaySVG /> Play</>}
-            </button>
+
+            {simulatorMode ? (
+              /* ── Simulator controls ── */
+              !discOnPlatter && !isEjecting ? (
+                <div className="shelf__drag-hint" style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: 0.75, fontFamily: 'monospace', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                   Drag disc to turntable
+                </div>
+              ) : (
+                <div className="shelf__btn-group">
+                  {discOnPlatter && !isPlaying && (
+                    <span className="shelf__needle-hint">Click the tonearm to play</span>
+                  )}
+                  <button
+                    className="shelf__btn shelf__btn--ejecting"
+                    style={{ '--c': selected.color, '--a': selected.accentColor }}
+                    onClick={onEject}
+                    disabled={isEjecting}
+                  >
+                    <EjectSVG /> Eject
+                  </button>
+                </div>
+              )
+            ) : (
+              /* ── Classic controls ── */
+              <div className="shelf__btn-group">
+                {!isPlaying && (
+                  <button
+                    className="shelf__btn shelf__btn--play"
+                    style={{ '--c': selected.color, '--a': selected.accentColor }}
+                    onClick={onPlay}
+                    disabled={isEjecting}
+                  >
+                    <PlaySVG /> Play
+                  </button>
+                )}
+                <button
+                  className="shelf__btn shelf__btn--ejecting"
+                  style={{ '--c': selected.color, '--a': selected.accentColor }}
+                  onClick={onEject}
+                  disabled={isEjecting}
+                >
+                  <EjectSVG /> Eject
+                </button>
+              </div>
+            )}
           </>
         ) : (
-          <span className="shelf__hint">Pull a record from the shelf</span>
+          <span className="shelf__hint">← Browse · click to select</span>
         )}
       </div>
     </div>
@@ -434,8 +439,18 @@ export function RecordShelf({ albums, selectedIndex, onSelect, isPlaying, onPlay
 
 function PlaySVG() {
   return (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none">
       <polygon points="5 3 19 12 5 21 5 3" />
+    </svg>
+  )
+}
+
+function PlaceSVG() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <circle cx="12" cy="12" r="3" />
+      <line x1="12" y1="2" x2="12" y2="6" />
     </svg>
   )
 }

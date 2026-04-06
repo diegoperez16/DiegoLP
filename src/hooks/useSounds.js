@@ -33,12 +33,34 @@ export function useSounds() {
     src.start()
   }, [])
 
+  // ── Disc landing thud ───────────────────────────────────────────
+  const playDiscLand = useCallback(() => {
+    const ac = getCtx(ctxRef)
+    const now = ac.currentTime
+    const osc = ac.createOscillator()
+    const og = ac.createGain()
+    osc.frequency.setValueAtTime(90, now)
+    osc.frequency.exponentialRampToValueAtTime(40, now + 0.12)
+    og.gain.setValueAtTime(0.3, now)
+    og.gain.exponentialRampToValueAtTime(0.001, now + 0.18)
+    osc.connect(og).connect(ac.destination)
+    osc.start(now); osc.stop(now + 0.18)
+
+    const bufLen = Math.floor(ac.sampleRate * 0.05)
+    const nb = ac.createBuffer(1, bufLen, ac.sampleRate)
+    const nd = nb.getChannelData(0)
+    for (let i = 0; i < bufLen; i++) nd[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufLen, 3)
+    const ns = ac.createBufferSource()
+    ns.buffer = nb
+    const ng = ac.createGain(); ng.gain.value = 0.18
+    ns.connect(ng).connect(ac.destination); ns.start(now)
+  }, [])
+
   // ── Needle drop ─────────────────────────────────────────────────
   const playNeedleDrop = useCallback(() => {
     const ac = getCtx(ctxRef)
     const now = ac.currentTime
 
-    // Percussive thud
     const osc = ac.createOscillator()
     const og = ac.createGain()
     osc.frequency.setValueAtTime(150, now)
@@ -46,20 +68,31 @@ export function useSounds() {
     og.gain.setValueAtTime(0.6, now)
     og.gain.exponentialRampToValueAtTime(0.001, now + 0.14)
     osc.connect(og).connect(ac.destination)
-    osc.start(now)
-    osc.stop(now + 0.14)
+    osc.start(now); osc.stop(now + 0.14)
 
-    // Short noise burst layer
     const bufLen = Math.floor(ac.sampleRate * 0.07)
     const nb = ac.createBuffer(1, bufLen, ac.sampleRate)
     const nd = nb.getChannelData(0)
     for (let i = 0; i < bufLen; i++) nd[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufLen, 2.5)
     const ns = ac.createBufferSource()
     ns.buffer = nb
-    const ng = ac.createGain()
-    ng.gain.value = 0.35
-    ns.connect(ng).connect(ac.destination)
-    ns.start(now)
+    const ng = ac.createGain(); ng.gain.value = 0.35
+    ns.connect(ng).connect(ac.destination); ns.start(now)
+  }, [])
+
+  // ── Needle lift (soft click) ─────────────────────────────────────
+  const playNeedleLift = useCallback(() => {
+    const ac = getCtx(ctxRef)
+    const now = ac.currentTime
+    const bufLen = Math.floor(ac.sampleRate * 0.04)
+    const nb = ac.createBuffer(1, bufLen, ac.sampleRate)
+    const nd = nb.getChannelData(0)
+    for (let i = 0; i < bufLen; i++) nd[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufLen, 4)
+    const ns = ac.createBufferSource()
+    ns.buffer = nb
+    const hpf = ac.createBiquadFilter(); hpf.type = 'highpass'; hpf.frequency.value = 1200
+    const ng = ac.createGain(); ng.gain.value = 0.15
+    ns.connect(hpf).connect(ng).connect(ac.destination); ns.start(now)
   }, [])
 
   // ── Vinyl crackle (looping) ─────────────────────────────────────
@@ -67,20 +100,15 @@ export function useSounds() {
     if (crackleRef.current) return
     const ac = getCtx(ctxRef)
     const sr = ac.sampleRate
-    // 2-second noise loop with sparse random pops
     const buf = ac.createBuffer(1, sr * 2, sr)
     const d = buf.getChannelData(0)
     for (let i = 0; i < d.length; i++) {
       d[i] = Math.random() < 0.0018 ? (Math.random() * 2 - 1) * 0.75 : 0
     }
     const src = ac.createBufferSource()
-    src.buffer = buf
-    src.loop = true
-    const hpf = ac.createBiquadFilter()
-    hpf.type = 'highpass'
-    hpf.frequency.value = 650
-    const g = ac.createGain()
-    g.gain.value = 0.13
+    src.buffer = buf; src.loop = true
+    const hpf = ac.createBiquadFilter(); hpf.type = 'highpass'; hpf.frequency.value = 650
+    const g = ac.createGain(); g.gain.value = 0.13
     src.connect(hpf).connect(g).connect(ac.destination)
     src.start()
     crackleRef.current = { src }
@@ -94,5 +122,5 @@ export function useSounds() {
 
   useEffect(() => () => { stopCrackle() }, [stopCrackle])
 
-  return { playSlide, playNeedleDrop, startCrackle, stopCrackle }
+  return { playSlide, playDiscLand, playNeedleDrop, playNeedleLift, startCrackle, stopCrackle }
 }

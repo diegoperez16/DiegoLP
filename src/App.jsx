@@ -10,7 +10,6 @@ import './App.css'
 
 function MusicWidget() {
   const [open, setOpen] = useState(false)
-  // Use a static color (e.g. the default purple 7c3aed) so the iframe src never changes and never interrupts audio when navigating!
   const src = `https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2217627596&color=%237c3aed&auto_play=false&hide_related=false&show_comments=false&show_user=false&show_reposts=false&show_teaser=false`
 
   return (
@@ -24,12 +23,12 @@ function MusicWidget() {
         <span>My Playlist</span>
       </button>
       <div className="music-widget__panel">
-        <iframe 
-          width="100%" 
-          height="450" 
-          scrolling="no" 
-          frameBorder="no" 
-          allow="autoplay" 
+        <iframe
+          width="100%"
+          height="450"
+          scrolling="no"
+          frameBorder="no"
+          allow="autoplay"
           src={src}
           style={{ borderRadius: '8px' }}
         />
@@ -39,80 +38,121 @@ function MusicWidget() {
 }
 
 export default function App() {
-  const [selectedIndex, setSelectedIndex] = useState(null)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [panelOpen, setPanelOpen] = useState(false)
-  const [rpm, setRpm] = useState(33)
-  const [jukeboxOpen, setJukeboxOpen] = useState(false)
-  const [jukeboxTrack, setJukeboxTrack] = useState(null)
+  const [simulatorMode, setSimulatorMode]       = useState(false)
+  const [selectedIndex, setSelectedIndex]       = useState(null)
+  const [discOnPlatter, setDiscOnPlatter]       = useState(false)
+  const [isEjecting, setIsEjecting]             = useState(false)
+  const [isPlaying, setIsPlaying]               = useState(false)
+  const [panelOpen, setPanelOpen]               = useState(false)
+  const [rpm, setRpm]                           = useState(33)
+  const [jukeboxOpen, setJukeboxOpen]           = useState(false)
+  const [jukeboxTrack, setJukeboxTrack]         = useState(null)
 
   const headerRef = useRef()
-  const shelfRef = useRef()
+  const shelfRef  = useRef()
   const audioPreviewRef = useRef(null)
-  const { playSlide, playNeedleDrop, startCrackle, stopCrackle } = useSounds()
+  const { playSlide, playDiscLand, playNeedleDrop, playNeedleLift, startCrackle, stopCrackle } = useSounds()
 
   const currentAlbum = selectedIndex !== null ? albums[selectedIndex] : null
 
   useEffect(() => {
-    gsap.fromTo(headerRef.current,
-      { opacity: 0, y: -12 },
-      { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' }
-    )
-    gsap.fromTo(shelfRef.current,
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: 0.3 }
-    )
+    gsap.fromTo(headerRef.current, { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' })
+    gsap.fromTo(shelfRef.current,  { opacity: 0, y: 20  }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: 0.3 })
   }, [])
 
-  // Triggered when a shelf album is selected
+  // Reset all state when switching modes
+  function handleModeToggle() {
+    setIsPlaying(false)
+    setDiscOnPlatter(false)
+    setIsEjecting(false)
+    setSelectedIndex(null)
+    setPanelOpen(false)
+    setJukeboxOpen(false)
+    setJukeboxTrack(null)
+    stopCrackle()
+    if (audioPreviewRef.current) audioPreviewRef.current.pause()
+    setSimulatorMode(m => !m)
+  }
+
+  // ── Select an album from the shelf ──────────────────────────────
   function handleSelectShelfAlbum(idx) {
-    if (idx === selectedIndex) {
-      if (!isPlaying) setSelectedIndex(null) // Unselect if they click it again while idle
-      return
-    }
-    setSelectedIndex(idx)
-    playSlide()
-    
-    // If ANY music is playing (either jukebox or album), open info panel immediately so they can read.
-    // If silence, just lift the record in the shelf and wait for them to hit Play.
-    if (isPlaying || jukeboxTrack) {
-      setPanelOpen(true)
+    if (simulatorMode) {
+      // Simulator: don't switch while disc is committed
+      if (discOnPlatter || isEjecting) return
+      if (idx === selectedIndex) { setSelectedIndex(null); return }
+      setSelectedIndex(idx)
+      playSlide()
+      setPanelOpen(false)
     } else {
+      // Classic: selecting ejects current disc first (if any), auto-places new disc
+      if (isEjecting) return
+      if (discOnPlatter) {
+        // Already have a disc — eject it and return; user can click again to select new
+        handleEjectDisc()
+        return
+      }
+      if (idx === selectedIndex) { setSelectedIndex(null); return }
+      setSelectedIndex(idx)
+      setDiscOnPlatter(true)
+      playSlide()
+      playDiscLand()
       setPanelOpen(false)
     }
   }
 
-  // Triggered when "Play" is clicked ON the shelf's control strip
-  function handlePlayShelfAlbum() {
-    if (selectedIndex === null) return
-    setJukeboxTrack(null)
-    if (audioPreviewRef.current) audioPreviewRef.current.pause()
+  // ── Place selected disc onto the turntable platter (simulator only) ─
+  function handlePlaceOnTurntable() {
+    if (selectedIndex === null || discOnPlatter) return
+    setDiscOnPlatter(true)
+    playDiscLand()
+  }
+
+  // ── Play (classic mode) ──────────────────────────────────────────
+  function handlePlay() {
+    if (!discOnPlatter || isEjecting) return
     setIsPlaying(true)
-    setPanelOpen(true) // Show the info panel now that they hit Play
+    setPanelOpen(true)
     playNeedleDrop()
     startCrackle()
   }
 
-  // Triggered when ContentPanel X is clicked
+  // ── Drop needle (simulator: tonearm click in 3D) ──────────────────
+  function handleNeedleDrop() {
+    if (!discOnPlatter || isEjecting || jukeboxTrack) return
+    setIsPlaying(true)
+    setPanelOpen(true)
+    playNeedleDrop()
+    startCrackle()
+  }
+
+  // ── Lift needle (simulator: tonearm click in 3D) ──────────────────
+  function handleNeedleLift() {
+    if (jukeboxTrack) return
+    setIsPlaying(false)
+    stopCrackle()
+    playNeedleLift()
+  }
+
+  // ── Eject the disc ────────────────────────────────────────────────
+  function handleEjectDisc() {
+    if (isEjecting) return
+    setIsPlaying(false)
+    setIsEjecting(true)
+    stopCrackle()
+    setPanelOpen(false)
+    setTimeout(() => {
+      setDiscOnPlatter(false)
+      setIsEjecting(false)
+      setSelectedIndex(null)
+    }, 900)
+  }
+
   function handleClosePanel() {
     setPanelOpen(false)
-    // Note: We don't unselect the album or stop the turntable! 
-    // They can just watch the record spin without the info blocking their view.
   }
 
-  // Triggered when "Eject" is clicked on the shelf strip
-  function handleEjectShelfAlbum() {
-    // If the shelf album was actually on the turntable, stop the turntable
-    if (isPlaying && !jukeboxTrack) {
-      setIsPlaying(false)
-      stopCrackle()
-    }
-    setPanelOpen(false)
-    // We intentionally don't clear selectedIndex so the record gently drops back into its lifted slot on the shelf.
-  }
-
+  // ── Jukebox (simulator only) ──────────────────────────────────────
   function handleJukeboxPlay(track) {
-    // Keep setSelectedIndex intact so they can keep reading info!
     setJukeboxTrack(track)
     setIsPlaying(true)
     playNeedleDrop()
@@ -126,7 +166,6 @@ export default function App() {
   function handleJukeboxEject() {
     setJukeboxTrack(null)
     if (audioPreviewRef.current) audioPreviewRef.current.pause()
-    // If no album was actively selected to fall back on, stop the motor
     if (selectedIndex === null) {
       setIsPlaying(false)
       stopCrackle()
@@ -145,15 +184,17 @@ export default function App() {
     }
   }
 
-  function handleRpmToggle(val) {
-    setRpm(val)
-  }
+  function handleRpmToggle(val) { setRpm(val) }
+
+  const showVinyl = discOnPlatter || isEjecting || !!jukeboxTrack
+
+  // Classic mode: no default purple glow, use album color or transparent
+  const sceneGlow = currentAlbum
+    ? `${currentAlbum.color}20`
+    : (jukeboxTrack ? '#ffffff10' : (simulatorMode ? '#7c3aed20' : 'transparent'))
 
   return (
-    <div
-      className="app"
-      style={{ '--scene-glow': currentAlbum ? `${currentAlbum.color}20` : (jukeboxTrack ? '#ffffff10' : 'transparent') }}
-    >
+    <div className="app" style={{ '--scene-glow': sceneGlow }}>
       <div className="app__glow" />
       <audio ref={audioPreviewRef} onEnded={handleJukeboxEject} />
 
@@ -162,10 +203,27 @@ export default function App() {
         <span className="app__header-sub">Portfolio · {new Date().getFullYear()}</span>
       </header>
 
+      {/* Mode toggle + music widget */}
       <div className="app__top-left-controls">
+        <button
+          className={`mode-toggle-btn ${simulatorMode ? 'mode-toggle-btn--active' : ''}`}
+          onClick={handleModeToggle}
+          aria-label="Toggle Simulator Mode"
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <circle cx="12" cy="12" r="3" />
+            <line x1="12" y1="2" x2="12" y2="5" />
+            <line x1="12" y1="19" x2="12" y2="22" />
+            <line x1="2" y1="12" x2="5" y2="12" />
+            <line x1="19" y1="12" x2="22" y2="12" />
+          </svg>
+          <span>{simulatorMode ? 'Exit Simulator' : 'Simulator Mode'}</span>
+        </button>
         <MusicWidget />
       </div>
 
+      {/* Jukebox controls */}
       <div className="app__top-center">
         {!jukeboxTrack ? (
           <button className="jukebox-toggle-btn" onClick={() => setJukeboxOpen(!jukeboxOpen)} aria-label="Toggle Jukebox Mode">
@@ -190,15 +248,33 @@ export default function App() {
         )}
       </div>
 
-      {jukeboxOpen && <Jukebox onSelectTrack={handleJukeboxPlay} onClose={() => setJukeboxOpen(false)} />}
+      {jukeboxOpen && (
+        <Jukebox onSelectTrack={handleJukeboxPlay} onClose={() => setJukeboxOpen(false)} />
+      )}
+
+      {/* Shooting stars (simulator only) */}
+      {simulatorMode && (
+        <>
+          <div className="shooting-star" data-s="1" />
+          <div className="shooting-star" data-s="2" />
+          <div className="shooting-star" data-s="3" />
+          <div className="shooting-star" data-s="4" />
+        </>
+      )}
 
       <div className="app__canvas">
         <Scene
+          simulatorMode={simulatorMode}
           currentAlbum={currentAlbum}
           jukeboxTrack={jukeboxTrack}
           isPlaying={isPlaying}
           rpm={rpm}
           onRpmToggle={handleRpmToggle}
+          discOnPlatter={discOnPlatter}
+          isEjecting={isEjecting}
+          showVinyl={showVinyl}
+          onNeedleDrop={simulatorMode ? handleNeedleDrop : undefined}
+          onNeedleLift={simulatorMode ? handleNeedleLift : undefined}
         />
       </div>
 
@@ -212,10 +288,14 @@ export default function App() {
         <RecordShelf
           albums={albums}
           selectedIndex={selectedIndex}
-          isPlaying={isPlaying && currentAlbum && !jukeboxTrack}
+          discOnPlatter={discOnPlatter}
+          isEjecting={isEjecting}
+          isPlaying={isPlaying && !jukeboxTrack}
+          simulatorMode={simulatorMode}
           onSelect={handleSelectShelfAlbum}
-          onPlay={handlePlayShelfAlbum}
-          onEject={handleEjectShelfAlbum}
+          onPlace={handlePlaceOnTurntable}
+          onPlay={handlePlay}
+          onEject={handleEjectDisc}
         />
       </div>
     </div>
