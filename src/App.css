@@ -111,19 +111,25 @@
   .app__header-sub { display: none; }
 }
 
-/* ── Floating Music Widget ── */
-.music-widget {
+/* ── Floating Controls ── */
+.app__top-left-controls {
   position: absolute;
   top: 20px;
   left: 24px;
   z-index: 30;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.music-widget {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 12px;
 }
 
-.music-widget__toggle {
+.music-widget__toggle, .jukebox-toggle-btn {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -139,8 +145,10 @@
   transition: all 0.2s ease;
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
+  white-space: nowrap;
 }
-.music-widget__toggle:hover {
+
+.music-widget__toggle:hover, .jukebox-toggle-btn:hover {
   background: rgba(255,255,255,0.1);
   border-color: rgba(255,255,255,0.3);
 }
@@ -166,11 +174,84 @@
 }
 
 @media (max-width: 768px) {
-  .music-widget {
+  .app__top-left-controls {
     top: 14px;
     left: 14px;
+    flex-direction: column;
+    gap: 8px;
   }
   .music-widget__panel {
     width: 280px;
   }
+}
+
+/* ── Top Center Jukebox Controls ── */
+.app__top-center {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.jukebox-mini-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: rgba(10, 10, 12, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 8px 12px 8px 24px;
+  border-radius: 50px;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  animation: slideDownJukebox 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideDownJukebox {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.jukebox-np-title {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.jukebox-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.jukebox-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid transparent;
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 30px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.jukebox-btn:hover { background: rgba(255,255,255,0.2); }
+.jukebox-btn--eject { background: transparent; border-color: rgba(255,255,255,0.2); }
+.jukebox-btn--eject:hover { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.05); }
+
+@media (max-width: 768px) {
+  .app__top-center { top: 14px; }
+  .jukebox-mini-controls { padding: 6px 10px 6px 16px; gap: 12px; }
+  .jukebox-np-title { max-width: 100px; font-size: 13px; }
+  .jukebox-btn { padding: 6px 14px; font-size: 12px; }
 }

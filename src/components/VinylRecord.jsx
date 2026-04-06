@@ -1,4 +1,4 @@
-import { useRef, useMemo, useEffect } from 'react'
+import { useRef, useMemo, useEffect, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
@@ -69,12 +69,28 @@ function darken(hex, pct) {
 }
 
 /* ── Component ───────────────────────────────────────────────────── */
-export function VinylRecord({ isPlaying, albumColor = '#7c3aed', rpm = 33, position = [0, 0, 0] }) {
+export function VinylRecord({ isPlaying, albumColor = '#7c3aed', customCoverUrl, rpm = 33, position = [0, 0, 0] }) {
   const groupRef = useRef()
   const speedRef = useRef(0)
   const scratchingRef = useRef(false)
   const scratchStartX = useRef(0)
   const scratchStartAngle = useRef(0)
+
+  const [pictureTex, setPictureTex] = useState(null)
+
+  useEffect(() => {
+    if (!customCoverUrl) {
+      setPictureTex(null)
+      return
+    }
+    const loader = new THREE.TextureLoader()
+    loader.setCrossOrigin('anonymous')
+    loader.load(customCoverUrl, (tex) => {
+      tex.colorSpace = THREE.SRGBColorSpace
+      tex.anisotropy = 16
+      setPictureTex(tex)
+    })
+  }, [customCoverUrl])
 
   const texture = useMemo(() => {
     const tex = new THREE.CanvasTexture(buildGrooveTexture(albumColor))
@@ -124,7 +140,7 @@ export function VinylRecord({ isPlaying, albumColor = '#7c3aed', rpm = 33, posit
       <mesh receiveShadow castShadow onPointerDown={onScratchDown} cursor="grab">
         <cylinderGeometry args={[1.42, 1.42, 0.038, 128]} />
         <meshPhysicalMaterial
-          map={texture}
+          map={pictureTex || texture}
           roughness={0.28}
           metalness={0.06}
           clearcoat={0.9}

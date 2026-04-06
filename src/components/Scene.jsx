@@ -85,16 +85,17 @@ function Particles({ isPlaying, color, count = 50 }) {
 }
 
 /* ── Main scene ──────────────────────────────────────────────────── */
-function SceneContents({ currentAlbum, isPlaying, rpm, onRpmToggle }) {
+function SceneContents({ currentAlbum, jukeboxTrack, isPlaying, rpm, onRpmToggle }) {
   const lighting = useMemo(() => getTimeLighting(), [])
   const accentColor = currentAlbum?.accentColor ?? '#c8b89a'
+  const isTargetingTurntable = isPlaying && (!!currentAlbum || !!jukeboxTrack)
 
   // Camera eases in when playing
   useFrame((state) => {
-    const targetY = isPlaying ? 3.0 : 3.8
-    const targetZ = isPlaying ? 4.2 : 5.5
-    const targetCamX = isPlaying ? 2.2 : 1.5
-    const targetLookX = isPlaying ? 1.2 : 0
+    const targetY = isTargetingTurntable ? 3.0 : 3.8
+    const targetZ = isTargetingTurntable ? 4.2 : 5.5
+    const targetCamX = isTargetingTurntable ? 2.2 : 1.5
+    const targetLookX = isTargetingTurntable ? 1.2 : 0
 
     state.camera.position.x += (targetCamX - state.camera.position.x) * 0.02
     state.camera.position.y += (targetY - state.camera.position.y) * 0.02
@@ -145,7 +146,7 @@ function SceneContents({ currentAlbum, isPlaying, rpm, onRpmToggle }) {
       </mesh>
 
       {/* Particles + glow (always in world space, outside PC group) */}
-      {currentAlbum && (
+      {(currentAlbum || jukeboxTrack) && (
         <>
           <VinylGlow isPlaying={isPlaying} color={accentColor} />
           <Particles isPlaying={isPlaying} color={accentColor} />
@@ -162,10 +163,11 @@ function SceneContents({ currentAlbum, isPlaying, rpm, onRpmToggle }) {
       >
         <group>
           <TurntableModel isPlaying={isPlaying} rpm={rpm} onRpmToggle={onRpmToggle} />
-          {currentAlbum && (
+          {(currentAlbum || jukeboxTrack) && (
             <VinylRecord
               isPlaying={isPlaying}
-              albumColor={currentAlbum.color}
+              albumColor={currentAlbum ? currentAlbum.color : '#ffffff'}
+              customCoverUrl={jukeboxTrack ? jukeboxTrack.coverUrl : null}
               rpm={rpm}
               position={[0, 0.096, 0.08]}
             />
@@ -178,7 +180,7 @@ function SceneContents({ currentAlbum, isPlaying, rpm, onRpmToggle }) {
   )
 }
 
-export function Scene({ currentAlbum, isPlaying, rpm, onRpmToggle }) {
+export function Scene({ currentAlbum, jukeboxTrack, isPlaying, rpm, onRpmToggle }) {
   return (
     <Canvas
       shadows
@@ -187,12 +189,7 @@ export function Scene({ currentAlbum, isPlaying, rpm, onRpmToggle }) {
       style={{ width: '100%', height: '100%' }}
     >
       <Suspense fallback={null}>
-        <SceneContents
-          currentAlbum={currentAlbum}
-          isPlaying={isPlaying}
-          rpm={rpm}
-          onRpmToggle={onRpmToggle}
-        />
+        <SceneContents currentAlbum={currentAlbum} jukeboxTrack={jukeboxTrack} isPlaying={isPlaying} rpm={rpm} onRpmToggle={onRpmToggle} />
       </Suspense>
     </Canvas>
   )
