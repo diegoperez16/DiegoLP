@@ -1,9 +1,10 @@
-import { useRef, useMemo, Suspense } from 'react'
+import { useRef, useMemo, Suspense, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { Environment, OrbitControls, PresentationControls, RoundedBox, Stars, ContactShadows } from '@react-three/drei'
+import { Environment, OrbitControls, PresentationControls, RoundedBox, ContactShadows } from '@react-three/drei'
 import * as THREE from 'three'
 import { TurntableModel } from './TurntableModel'
 import { VinylRecord } from './VinylRecord'
+import { SimulatorAlbums3D } from './SimulatorAlbums3D'
 
 /* ── Time-of-day lighting (classic mode) ────────────────────────── */
 function getTimeLighting() {
@@ -196,8 +197,8 @@ function ClassicSceneContents({
   const vinylColor  = currentAlbum ? currentAlbum.color : '#ffffff'
 
   useFrame((state) => {
-    const targetY = isPlaying ? 3.2 : 3.8
-    const targetZ = isPlaying ? 4.7 : 5.5
+    const targetY = isPlaying ? 3.2 : 3.6
+    const targetZ = isPlaying ? 5.2 : 6.2
     state.camera.position.y += (targetY - state.camera.position.y) * 0.016
     state.camera.position.z += (targetZ - state.camera.position.z) * 0.016
   })
@@ -215,7 +216,7 @@ function ClassicSceneContents({
       <Environment preset="warehouse" environmentIntensity={0.18} />
 
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.26, 0]} receiveShadow>
-        <planeGeometry args={[28, 20]} />
+        <planeGeometry args={[80, 80]} />
         <meshStandardMaterial color="#090909" roughness={0.96} metalness={0} />
       </mesh>
 
@@ -261,15 +262,18 @@ function ClassicSceneContents({
 
 /* ── Simulator scene ─────────────────────────────────────────────── */
 function SimulatorSceneContents({
-  currentAlbum, jukeboxTrack, isPlaying, rpm, onRpmToggle,
-  discOnPlatter, isEjecting, showVinyl, onNeedleDrop, onNeedleLift
+  albums, currentAlbum, selectedIndex, simulatorBackground, simulatorAlbumFlipped, simulatorInspectMode, jukeboxTrack, isPlaying, rpm, onRpmToggle,
+  discOnPlatter, isEjecting, showVinyl, onNeedleDrop, onNeedleLift, onSelectAlbum, onPlaceDisc
 }) {
+  const [draggingDisc, setDraggingDisc] = useState(false)
   const accentColor = currentAlbum?.accentColor ?? '#a78bfa'
   const vinylColor  = currentAlbum ? currentAlbum.color : '#ffffff'
+  const BackgroundBackdrop = simulatorBackground?.SceneBackdrop ?? null
 
   return (
     <>
       <OrbitControls
+        enabled={!draggingDisc && !simulatorInspectMode}
         enableDamping
         dampingFactor={0.06}
         target={[0, 0.2, 0]}
@@ -308,17 +312,28 @@ function SimulatorSceneContents({
         decay={1.6}
       />
 
-      <Environment preset="night" environmentIntensity={0.12} />
-      <Stars radius={10} depth={50} count={6000} factor={5} saturation={0.3} fade speed={1} />
+      {BackgroundBackdrop && <BackgroundBackdrop accentColor={accentColor} isPlaying={isPlaying} />}
 
       <Desk />
+
+      <SimulatorAlbums3D
+        albums={albums}
+        selectedIndex={selectedIndex}
+        simulatorAlbumFlipped={simulatorAlbumFlipped}
+        simulatorInspectMode={simulatorInspectMode}
+        discOnPlatter={discOnPlatter}
+        isEjecting={isEjecting}
+        onSelectAlbum={onSelectAlbum}
+        onPlaceDisc={onPlaceDisc}
+        onDraggingChange={setDraggingDisc}
+      />
 
       <TurntableModel
         isPlaying={isPlaying}
         rpm={rpm}
         onRpmToggle={onRpmToggle}
         discOnPlatter={discOnPlatter}
-        discAvailable={!!currentAlbum && !discOnPlatter && !isEjecting}
+        discAvailable={!!currentAlbum && !discOnPlatter && !isEjecting && !simulatorAlbumFlipped && !simulatorInspectMode}
         onNeedleDrop={onNeedleDrop}
         onNeedleLift={onNeedleLift}
       />
@@ -352,7 +367,7 @@ export function Scene({ simulatorMode = false, ...props }) {
       shadows={simulatorMode ? 'soft' : true}
       camera={simulatorMode
         ? { position: [1.5, 4.2, 7], fov: 42 }
-        : { position: [1.5, 3.8, 5.5], fov: 44 }
+        : { position: [1.5, 3.6, 6.2], fov: 44 }
       }
       gl={{ antialias: true, alpha: true, toneMappingExposure: 1.1 }}
       style={{ width: '100%', height: '100%' }}

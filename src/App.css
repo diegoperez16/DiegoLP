@@ -4,7 +4,7 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: radial-gradient(ellipse at bottom, #161129 0%, #050508 100%);
+  background: var(--app-background, radial-gradient(ellipse at bottom, #161129 0%, #050508 100%));
   overflow: hidden;
   position: relative;
 }
@@ -14,10 +14,11 @@
   content: "";
   position: absolute;
   inset: -100%;
-  background: 
+  background: var(--app-ambient-overlay,
     radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 40%),
     radial-gradient(circle at 10% 90%, rgba(255, 255, 255, 0.015) 0%, transparent 30%),
-    radial-gradient(circle at 90% 10%, rgba(255, 255, 255, 0.02) 0%, transparent 40%);
+    radial-gradient(circle at 90% 10%, rgba(255, 255, 255, 0.02) 0%, transparent 40%)
+  );
   animation: bgDrift 30s linear infinite;
   pointer-events: none;
   z-index: 0;
@@ -107,6 +108,7 @@
   font-weight: 700;
   color: #f0ece0;
   letter-spacing: -0.025em;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
 }
 
 .app__header-sub {
@@ -115,6 +117,7 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: rgba(240, 236, 224, 0.25);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.28);
 }
 
 /* ── 3D Canvas — fills remaining space, holds the panel as a child ── */
@@ -160,13 +163,33 @@
   50%       { opacity: 0.3; }
 }
 
-/* ── Shelf strip — always above canvas z-stack, never covered ── */
+/* ── Shelf floats over the canvas bottom-right — card stack only ── */
 .app__shelf {
-  flex-shrink: 0;
-  background: transparent;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  position: absolute;
+  bottom: 0;
+  right: clamp(24px, 4vw, 48px);
+  width: min(480px, calc(100vw - 48px));
+  max-width: calc(100vw - 48px);
+  box-sizing: border-box;
   z-index: 15;
-  position: relative;
+  background: transparent;
+  pointer-events: none;
+}
+
+.app__shelf > * {
+  pointer-events: auto;
+}
+
+.app__shelf--simulator {
+  top: 86px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;
+}
+
+.app__shelf--simulator > * {
+  pointer-events: none;
 }
 
 /* ── Responsive ── */
@@ -174,6 +197,7 @@
   .app__header { top: 14px; right: 16px; }
   .app__header-name { font-size: 16px; }
   .app__status { bottom: 10px; left: 14px; font-size: 8px; }
+  .app__shelf--simulator { top: 92px; }
 }
 
 @media (max-height: 560px) {
@@ -191,11 +215,69 @@
   align-items: flex-start;
 }
 
+.app__simulator-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+
 .music-widget {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 12px;
+}
+
+.simulator-background-picker {
+  min-width: 240px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(10, 10, 12, 0.55);
+  color: #f0ece0;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.28);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.simulator-background-picker__label {
+  display: block;
+  margin-bottom: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(240, 236, 224, 0.56);
+}
+
+.simulator-background-picker__select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.08);
+  color: #f0ece0;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.simulator-background-picker__select:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+.simulator-background-picker__select:focus {
+  border-color: rgba(255,255,255,0.3);
+}
+
+.simulator-background-picker__description {
+  margin: 10px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(240, 236, 224, 0.62);
 }
 
 .mode-toggle-btn {
@@ -204,33 +286,36 @@
   gap: 8px;
   padding: 8px 16px;
   border-radius: 50px;
-  border: 1px solid rgba(255,255,255,0.15);
-  background: rgba(255,255,255,0.05);
-  color: #f0ece0;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: linear-gradient(180deg, rgba(22, 27, 34, 0.82) 0%, rgba(10, 12, 16, 0.7) 100%);
+  color: #fff8ef;
   font-family: 'Space Grotesk', sans-serif;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
   white-space: nowrap;
+  box-shadow: 0 14px 34px rgba(4, 7, 12, 0.2), inset 0 1px 0 rgba(255,255,255,0.12);
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.36);
 }
 
 .mode-toggle-btn:hover {
-  background: rgba(255,255,255,0.1);
-  border-color: rgba(255,255,255,0.3);
+  background: linear-gradient(180deg, rgba(29, 35, 43, 0.88) 0%, rgba(12, 14, 20, 0.78) 100%);
+  border-color: rgba(255,255,255,0.34);
+  transform: translateY(-1px);
 }
 
 .mode-toggle-btn--active {
-  background: rgba(124, 58, 237, 0.25);
-  border-color: rgba(124, 58, 237, 0.6);
-  color: #c4b5fd;
+  background: linear-gradient(180deg, rgba(86, 52, 156, 0.92) 0%, rgba(67, 36, 132, 0.82) 100%);
+  border-color: rgba(202, 177, 255, 0.55);
+  color: #f4ebff;
 }
 
 .mode-toggle-btn--active:hover {
-  background: rgba(124, 58, 237, 0.35);
-  border-color: rgba(124, 58, 237, 0.8);
+  background: linear-gradient(180deg, rgba(96, 58, 176, 0.96) 0%, rgba(73, 39, 144, 0.86) 100%);
+  border-color: rgba(214, 193, 255, 0.74);
 }
 
 .music-widget__toggle, .jukebox-toggle-btn {
@@ -239,22 +324,25 @@
   gap: 8px;
   padding: 8px 16px;
   border-radius: 50px;
-  border: 1px solid rgba(255,255,255,0.15);
-  background: rgba(255,255,255,0.05);
-  color: #f0ece0;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: linear-gradient(180deg, rgba(22, 27, 34, 0.82) 0%, rgba(10, 12, 16, 0.7) 100%);
+  color: #fff8ef;
   font-family: 'Space Grotesk', sans-serif;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
   white-space: nowrap;
+  box-shadow: 0 14px 34px rgba(4, 7, 12, 0.2), inset 0 1px 0 rgba(255,255,255,0.12);
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.36);
 }
 
 .music-widget__toggle:hover, .jukebox-toggle-btn:hover {
-  background: rgba(255,255,255,0.1);
-  border-color: rgba(255,255,255,0.3);
+  background: linear-gradient(180deg, rgba(29, 35, 43, 0.88) 0%, rgba(12, 14, 20, 0.78) 100%);
+  border-color: rgba(255,255,255,0.34);
+  transform: translateY(-1px);
 }
 
 .music-widget__panel {
@@ -273,8 +361,8 @@
 }
 
 .music-widget--open .music-widget__toggle {
-  background: rgba(255,255,255,0.15);
-  border-color: rgba(255,255,255,0.4);
+  background: linear-gradient(180deg, rgba(35, 52, 68, 0.92) 0%, rgba(16, 24, 34, 0.82) 100%);
+  border-color: rgba(159, 213, 255, 0.38);
 }
 
 @media (max-width: 768px) {
@@ -283,6 +371,14 @@
     left: 14px;
     flex-direction: column;
     gap: 8px;
+  }
+  .app__simulator-controls {
+    width: min(320px, calc(100vw - 28px));
+  }
+  .simulator-background-picker {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
   .music-widget__panel {
     width: 280px;

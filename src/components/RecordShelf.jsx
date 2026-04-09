@@ -1,6 +1,43 @@
 import { useRef, useState, useEffect } from 'react'
 import CardSwap, { Card } from './CardSwap'
+import { portfolioContent } from '../data/portfolio'
 import './RecordShelf.css'
+
+const TABLE_LAYOUT = {
+  desktop: {
+    about: { x: '18%', y: '24%', rotate: -16 },
+    education: { x: '80%', y: '25%', rotate: 12 },
+    experience: { x: '12%', y: '52%', rotate: -9 },
+    projects: { x: '82%', y: '54%', rotate: 11 },
+    skills: { x: '28%', y: '74%', rotate: -12 },
+    contact: { x: '68%', y: '76%', rotate: 10 },
+  },
+  compact: {
+    about: { x: '24%', y: '24%', rotate: -10 },
+    education: { x: '76%', y: '25%', rotate: 8 },
+    experience: { x: '18%', y: '46%', rotate: -6 },
+    projects: { x: '80%', y: '48%', rotate: 7 },
+    skills: { x: '28%', y: '70%', rotate: -8 },
+    contact: { x: '72%', y: '72%', rotate: 7 },
+  },
+}
+
+const DEFAULT_DRAG_STATE = { x: 0, y: 0, active: false, overDropZone: false }
+
+function getDropZoneMetrics(rect) {
+  const compact = rect.width < 900
+
+  return {
+    x: rect.width * 0.5,
+    y: rect.height * (compact ? 0.46 : 0.54),
+    radius: Math.min(rect.width, rect.height) * (compact ? 0.17 : 0.13),
+  }
+}
+
+function isPointerOverDropZone(point, rect) {
+  const zone = getDropZoneMetrics(rect)
+  return Math.hypot(point.x - zone.x, point.y - zone.y) <= zone.radius
+}
 
 /* ── Album art SVGs with gritty textures ── */
 function AlbumArt({ album, size = 110 }) {
@@ -237,11 +274,274 @@ function AlbumArt({ album, size = 110 }) {
   return patterns[album.id] || patterns.about
 }
 
+function AlbumBackface({ album }) {
+  const content = portfolioContent[album.id]
+
+  if (!content) return null
+
+  return (
+    <div
+      className="shelf__table-back"
+      style={{
+        '--c': album.color,
+        '--a': album.accentColor,
+        '--ga': album.gradientA,
+        '--gb': album.gradientB,
+      }}
+    >
+      <div className="shelf__table-back-header">
+        <div>
+          <span className="shelf__table-back-genre">{album.genre}</span>
+          <h3 className="shelf__table-back-title">{content.heading}</h3>
+          <p className="shelf__table-back-meta">{album.title} · {album.rpm} RPM · {album.year}</p>
+        </div>
+      </div>
+
+      {content.body && <p className="shelf__table-back-body">{content.body}</p>}
+
+      <div className="shelf__table-back-tracks">
+        {content.tracks.map((track, i) => {
+          const hasLink = Boolean(track.link && track.link !== '#')
+          const isExternal = hasLink && /^https?:\/\//.test(track.link)
+
+          return (
+            <div key={`${album.id}-${i}`} className="shelf__table-back-track">
+              <span className="shelf__table-back-track-n">{track.number}</span>
+              <div className="shelf__table-back-track-main">
+                {hasLink ? (
+                  <a
+                    href={track.link}
+                    className="shelf__table-back-track-title shelf__table-back-track-title--link"
+                    target={isExternal ? '_blank' : undefined}
+                    rel={isExternal ? 'noreferrer' : undefined}
+                    onClick={e => e.stopPropagation()}
+                  >
+                    {track.title}
+                  </a>
+                ) : (
+                  <span className="shelf__table-back-track-title">{track.title}</span>
+                )}
+                {track.detail && (
+                  <p className="shelf__table-back-track-detail">{track.detail}</p>
+                )}
+              </div>
+              <span className="shelf__table-back-track-dur">{track.duration}</span>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+function SimulatorAlbum({
+  album,
+  albumSize,
+  isSelected,
+  isPlaying,
+  discOnPlatter,
+  isEjecting,
+  isFlipped,
+  layout,
+  surfaceRef,
+  onSelect,
+  onFlipToggle,
+  onPutAway,
+  onPlace,
+  onDropHoverChange,
+}) {
+  const [dragState, setDragState] = useState(DEFAULT_DRAG_STATE)
+
+  const canGrabDisc = isSelected && !discOnPlatter && !isEjecting && !isFlipped
+  const showReadyBadge = canGrabDisc && !dragState.active
+
+  useEffect(() => {
+    if (!canGrabDisc) {
+      setDragState(DEFAULT_DRAG_STATE)
+      onDropHoverChange?.(false)
+    }
+  }, [canGrabDisc, onDropHoverChange])
+
+  useEffect(() => {
+    return () => { document.body.style.cursor = '' }
+  }, [])
+
+  function updateDropState(clientX, clientY, nextOffset) {
+    const rect = surfaceRef.current?.getBoundingClientRect()
+    const offset = nextOffset || { x: 0, y: 0 }
+
+    if (!rect) {
+      const fallbackState = { ...offset, active: true, overDropZone: false }
+      setDragState(fallbackState)
+      onDropHoverChange?.(false)
+      return false
+    }
+
+    const point = {
+      x: clientX - rect.left,
+      y: clientY - rect.top,
+    }
+    const overDropZone = isPointerOverDropZone(point, rect)
+    const nextState = { ...offset, active: true, overDropZone }
+
+    setDragState(nextState)
+    onDropHoverChange?.(overDropZone)
+
+    return overDropZone
+  }
+
+  function handleDiscPointerDown(event) {
+    if (!canGrabDisc) return
+
+    event.stopPropagation()
+    event.preventDefault()
+    document.body.style.cursor = 'grabbing'
+
+    const startX = event.clientX ?? 0
+    const startY = event.clientY ?? 0
+
+    updateDropState(startX, startY, { x: 0, y: 0 })
+
+    function onPointerMove(moveEvent) {
+      if (moveEvent.cancelable) moveEvent.preventDefault()
+
+      const clientX = moveEvent.clientX ?? 0
+      const clientY = moveEvent.clientY ?? 0
+
+      updateDropState(clientX, clientY, {
+        x: clientX - startX,
+        y: clientY - startY,
+      })
+    }
+
+    function finishDrag(endEvent) {
+      const clientX = endEvent.clientX ?? startX
+      const clientY = endEvent.clientY ?? startY
+      const rect = surfaceRef.current?.getBoundingClientRect()
+      const shouldPlace = rect
+        ? isPointerOverDropZone({ x: clientX - rect.left, y: clientY - rect.top }, rect)
+        : false
+
+      window.removeEventListener('pointermove', onPointerMove)
+      window.removeEventListener('pointerup', onPointerUp)
+      window.removeEventListener('pointercancel', onPointerUp)
+      document.body.style.cursor = ''
+      onDropHoverChange?.(false)
+      setDragState(DEFAULT_DRAG_STATE)
+
+      if (shouldPlace) onPlace?.()
+    }
+
+    function onPointerUp(endEvent) {
+      finishDrag(endEvent)
+    }
+
+    window.addEventListener('pointermove', onPointerMove, { passive: false })
+    window.addEventListener('pointerup', onPointerUp)
+    window.addEventListener('pointercancel', onPointerUp)
+  }
+
+  const discStyle = {
+    '--c': album.color,
+    '--a': album.accentColor,
+    width: albumSize * 0.84,
+    height: albumSize * 0.84,
+    transform: dragState.active
+      ? `translate(calc(34% + ${dragState.x}px), calc(-50% + ${dragState.y}px)) rotate(${dragState.x * 0.08 + dragState.y * 0.03}deg) scale(1.02)`
+      : 'translate(34%, -50%) rotate(-8deg)',
+  }
+
+  return (
+    <div
+      className={`shelf__table-album ${isSelected ? 'shelf__table-album--selected' : ''}`}
+      style={{
+        left: layout.x,
+        top: layout.y,
+        '--album-rotate': `${isSelected ? 0 : layout.rotate}deg`,
+        '--album-size': `${albumSize}px`,
+      }}
+    >
+      {isSelected && (
+        <div className="shelf__table-album-actions" onClick={e => e.stopPropagation()}>
+          <button className="shelf__table-action" onClick={onFlipToggle}>
+            <FlipSVG /> {isFlipped ? 'Front' : 'Back'}
+          </button>
+          {!discOnPlatter && !isEjecting && (
+            <button className="shelf__table-action shelf__table-action--muted" onClick={onPutAway}>
+              <PutAwaySVG /> Put Away
+            </button>
+          )}
+        </div>
+      )}
+
+      <div
+        className={`shelf__table-card-shell ${isSelected ? 'shelf__table-card-shell--selected' : ''} ${isFlipped ? 'shelf__table-card-shell--flipped' : ''}`}
+        role="button"
+        tabIndex={0}
+        onClick={() => { if (!isSelected) onSelect?.() }}
+        onKeyDown={(event) => {
+          if (event.key !== 'Enter' && event.key !== ' ') return
+          event.preventDefault()
+          if (!isSelected) onSelect?.()
+        }}
+      >
+        {canGrabDisc && (
+          <div
+            className={`shelf__table-disc ${dragState.active ? 'shelf__table-disc--dragging' : ''} ${dragState.overDropZone ? 'shelf__table-disc--armed' : ''}`}
+            style={discStyle}
+            onPointerDown={handleDiscPointerDown}
+          />
+        )}
+
+        <div className="shelf__table-face shelf__table-face--front">
+          <div className="shelf__table-sleeve">
+            <AlbumArt album={album} size={albumSize} />
+            <div className="shelf__sleeve-gloss" />
+            <div className="shelf__sleeve-edge" style={{ background: album.gradientA }} />
+
+            {isSelected && discOnPlatter && (
+              <div className="shelf__table-empty-ring" />
+            )}
+
+            <div className="shelf__table-front-copy">
+              <span className="shelf__table-front-genre">{album.genre}</span>
+              <span className="shelf__table-front-title">{album.title}</span>
+            </div>
+
+            {showReadyBadge && (
+              <div className="shelf__table-ready-badge">
+                Pull record
+              </div>
+            )}
+
+            {isSelected && discOnPlatter && isPlaying && (
+              <div className="shelf__table-status-pill">
+                <span className="shelf__table-status-dot shelf__table-status-dot--live" />
+                Playing
+              </div>
+            )}
+
+            {isSelected && discOnPlatter && !isPlaying && (
+              <div className="shelf__table-status-pill shelf__table-status-pill--idle">
+                Cued
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="shelf__table-face shelf__table-face--back">
+          <AlbumBackface album={album} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 /* ── LP record item ── */
 function LPRecord({ album, isSelected, isPlaying, discOnPlatter, isEjecting, onPlace }) {
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
   const [isDragging, setIsDragging] = useState(false)
-  
+
   const isReadyToGrab = isSelected && !discOnPlatter && !isEjecting
 
   useEffect(() => {
@@ -256,23 +556,23 @@ function LPRecord({ album, isSelected, isPlaying, discOnPlatter, isEjecting, onP
     e.stopPropagation()
     if (e.target.setPointerCapture) e.target.setPointerCapture(e.pointerId)
     setIsDragging(true)
-    
+
     const startX = e.clientX ?? e.touches?.[0]?.clientX ?? 0
     const startY = e.clientY ?? e.touches?.[0]?.clientY ?? 0
-    
+
     function onPointerMove(ev) {
       const x = ev.clientX ?? ev.touches?.[0]?.clientX ?? 0
       const y = ev.clientY ?? ev.touches?.[0]?.clientY ?? 0
       setDragOffset({ x: x - startX, y: y - startY })
     }
-    
+
     function onPointerUp(ev) {
       window.removeEventListener('pointermove', onPointerMove)
       window.removeEventListener('pointerup', onPointerUp)
       window.removeEventListener('touchmove', onPointerMove)
       window.removeEventListener('touchend', onPointerUp)
       setIsDragging(false)
-      
+
       const y = ev.clientY ?? ev.changedTouches?.[0]?.clientY ?? startY
       // If dragged upwards by at least 70px towards the turntable, place it
       if (y - startY < -70) {
@@ -280,7 +580,7 @@ function LPRecord({ album, isSelected, isPlaying, discOnPlatter, isEjecting, onP
       }
       setDragOffset({ x: 0, y: 0 })
     }
-    
+
     window.addEventListener('pointermove', onPointerMove)
     window.addEventListener('pointerup', onPointerUp)
     window.addEventListener('touchmove', onPointerMove, { passive: false })
@@ -299,7 +599,7 @@ function LPRecord({ album, isSelected, isPlaying, discOnPlatter, isEjecting, onP
           left: 0, top: 0, transformOrigin: 'center center',
           '--c': album.color,
           '--a': album.accentColor,
-          transform: isReadyToGrab 
+          transform: isReadyToGrab
             ? `translate(${75 + dragOffset.x}px, ${dragOffset.y}px) rotate(${dragOffset.y * 0.15}deg) scale(0.95)`
             : (isSelected ? 'scale(0)' : 'scale(0.95)'),
           opacity: (isSelected && discOnPlatter) ? 0 : 1,
@@ -326,8 +626,113 @@ function LPRecord({ album, isSelected, isPlaying, discOnPlatter, isEjecting, onP
   )
 }
 
+function SimulatorRecordShelf({
+  albums,
+  selectedIndex,
+  discOnPlatter,
+  isEjecting,
+  isPlaying,
+  simulatorAlbumFlipped = false,
+  simulatorInspectMode = false,
+  onSelect,
+  onEject,
+  onFlipToggle,
+  onInspect,
+  onInspectClose,
+}) {
+  const selected = selectedIndex !== null ? albums[selectedIndex] : null
+  const selectedContent = selected ? portfolioContent[selected.id] : null
+  const isShowingBack = selectedIndex !== null && simulatorAlbumFlipped
+
+  let helperText = 'Pick a sleeve from the table — drag the record onto the platter or hit Inspect.'
+  if (selected && simulatorInspectMode && !isShowingBack) {
+    helperText = 'Drag the sleeve to rotate it. Hit Back when done.'
+  } else if (selected && simulatorInspectMode && isShowingBack) {
+    helperText = 'Drag to rotate. Turn Around to flip back.'
+  } else if (selected && !discOnPlatter && !isShowingBack) {
+    helperText = 'Drag the record out of the sleeve and drop it onto the platter.'
+  } else if (selected && !discOnPlatter && isShowingBack) {
+    helperText = 'Flip it back to the cover side when you are ready to grab the record.'
+  } else if (discOnPlatter && !isPlaying) {
+    helperText = 'The record is cued. Click the tonearm to start it.'
+  } else if (discOnPlatter && isPlaying) {
+    helperText = 'Now spinning. Eject when you want to swap albums.'
+  }
+
+  return (
+    <div className="shelf shelf--simulator">
+      <div className="shelf__tabletop">
+        <div className="shelf__table-hud">
+          {selected ? (
+            <>
+              <div className="shelf__table-hud-copy">
+                <span className="shelf__table-hud-genre">{selected.genre}</span>
+                <span className="shelf__table-hud-title">
+                  {isShowingBack && selectedContent ? selectedContent.heading : selected.title}
+                </span>
+                <span className="shelf__table-hud-note">{helperText}</span>
+              </div>
+
+              <div className="shelf__table-hud-actions">
+                {simulatorInspectMode ? (
+                  <button
+                    className="shelf__btn shelf__btn--table-muted"
+                    style={{ '--c': selected.color, '--a': selected.accentColor }}
+                    onClick={onInspectClose}
+                  >
+                    <PutAwaySVG /> Back
+                  </button>
+                ) : (
+                  <button
+                    className="shelf__btn shelf__btn--table"
+                    style={{ '--c': selected.color, '--a': selected.accentColor }}
+                    onClick={onInspect}
+                  >
+                    <InspectSVG /> Inspect
+                  </button>
+                )}
+
+                <button
+                  className="shelf__btn shelf__btn--table"
+                  style={{ '--c': selected.color, '--a': selected.accentColor }}
+                  onClick={onFlipToggle}
+                >
+                  <FlipSVG /> {isShowingBack ? 'Show Cover' : 'Turn Around'}
+                </button>
+
+                {discOnPlatter ? (
+                  <button
+                    className="shelf__btn shelf__btn--ejecting"
+                    style={{ '--c': selected.color, '--a': selected.accentColor }}
+                    onClick={onEject}
+                    disabled={isEjecting}
+                  >
+                    <EjectSVG /> Eject
+                  </button>
+                ) : (
+                  <button
+                    className="shelf__btn shelf__btn--table-muted"
+                    style={{ '--c': selected.color, '--a': selected.accentColor }}
+                    onClick={() => onSelect(selectedIndex)}
+                  >
+                    <PutAwaySVG /> Put Away
+                  </button>
+                )}
+              </div>
+            </>
+          ) : (
+            <span className="shelf__table-hud-note shelf__table-hud-note--idle">
+              The albums live on the desk as 3D sleeves. Click one — you can inspect it up close or slide the record straight onto the platter.
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 /* ── Shelf using CardSwap ── */
-export function RecordShelf({ albums, selectedIndex, discOnPlatter, isEjecting, isPlaying, onSelect, onPlace, onEject, onPlay, simulatorMode = true }) {
+function ClassicRecordShelf({ albums, selectedIndex, discOnPlatter, isEjecting, isPlaying, onSelect, onPlace, onEject, onPlay }) {
   const selected = selectedIndex !== null ? albums[selectedIndex] : null
   const swapRef  = useRef(null)
 
@@ -383,51 +788,26 @@ export function RecordShelf({ albums, selectedIndex, discOnPlatter, isEjecting, 
               <span className="shelf__now-rpm">{selected.rpm} RPM · {selected.year}</span>
             </div>
 
-            {simulatorMode ? (
-              /* ── Simulator controls ── */
-              !discOnPlatter && !isEjecting ? (
-                <div className="shelf__drag-hint" style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: 0.75, fontFamily: 'monospace', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-                   Drag disc to turntable
-                </div>
-              ) : (
-                <div className="shelf__btn-group">
-                  {discOnPlatter && !isPlaying && (
-                    <span className="shelf__needle-hint">Click the tonearm to play</span>
-                  )}
-                  <button
-                    className="shelf__btn shelf__btn--ejecting"
-                    style={{ '--c': selected.color, '--a': selected.accentColor }}
-                    onClick={onEject}
-                    disabled={isEjecting}
-                  >
-                    <EjectSVG /> Eject
-                  </button>
-                </div>
-              )
-            ) : (
-              /* ── Classic controls ── */
-              <div className="shelf__btn-group">
-                {!isPlaying && (
-                  <button
-                    className="shelf__btn shelf__btn--play"
-                    style={{ '--c': selected.color, '--a': selected.accentColor }}
-                    onClick={onPlay}
-                    disabled={isEjecting}
-                  >
-                    <PlaySVG /> Play
-                  </button>
-                )}
+            <div className="shelf__btn-group">
+              {!isPlaying && (
                 <button
-                  className="shelf__btn shelf__btn--ejecting"
+                  className="shelf__btn shelf__btn--play"
                   style={{ '--c': selected.color, '--a': selected.accentColor }}
-                  onClick={onEject}
+                  onClick={onPlay}
                   disabled={isEjecting}
                 >
-                  <EjectSVG /> Eject
+                  <PlaySVG /> Play
                 </button>
-              </div>
-            )}
+              )}
+              <button
+                className="shelf__btn shelf__btn--ejecting"
+                style={{ '--c': selected.color, '--a': selected.accentColor }}
+                onClick={onEject}
+                disabled={isEjecting}
+              >
+                <EjectSVG /> Eject
+              </button>
+            </div>
           </>
         ) : (
           <span className="shelf__hint">← Browse · click to select</span>
@@ -435,6 +815,14 @@ export function RecordShelf({ albums, selectedIndex, discOnPlatter, isEjecting, 
       </div>
     </div>
   )
+}
+
+export function RecordShelf(props) {
+  if (props.simulatorMode) {
+    return <SimulatorRecordShelf {...props} />
+  }
+
+  return <ClassicRecordShelf {...props} />
 }
 
 function PlaySVG() {
@@ -445,12 +833,23 @@ function PlaySVG() {
   )
 }
 
-function PlaceSVG() {
+function FlipSVG() {
   return (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10" />
-      <circle cx="12" cy="12" r="3" />
-      <line x1="12" y1="2" x2="12" y2="6" />
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 12a7 7 0 0 1 12-4" />
+      <path d="M21 12a7 7 0 0 1-12 4" />
+      <polyline points="15 3 15 8 20 8" />
+      <polyline points="9 21 9 16 4 16" />
+    </svg>
+  )
+}
+
+function PutAwaySVG() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 8h16v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8Z" />
+      <path d="M9 12h6" />
+      <path d="M7 4h10l2 4H5l2-4Z" />
     </svg>
   )
 }
@@ -460,6 +859,15 @@ function EjectSVG() {
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
       <polygon points="5 4 15 12 5 20 5 4" />
       <line x1="19" y1="5" x2="19" y2="19" />
+    </svg>
+  )
+}
+
+function InspectSVG() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
     </svg>
   )
 }
