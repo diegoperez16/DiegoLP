@@ -63,14 +63,6 @@
    "height": 1200,
    "alt": "A glittering pair of Mickey ears against a blue sky",
    "cutout": false
-  },
-  {
-   "src": "/images/xp/l3harris-2026/09.webp",
-   "thumb": "/images/xp/l3harris-2026/09-thumb.webp",
-   "width": 1350,
-   "height": 1800,
-   "alt": "In front of a floor-to-ceiling aquarium tank",
-   "cutout": false
   }
  ],
  "rocs": [
@@ -297,6 +289,14 @@
   {
    "src": "/images/xp/tech-exchange/09.webp",
    "thumb": "/images/xp/tech-exchange/09-thumb.webp",
+   "width": 1350,
+   "height": 1800,
+   "alt": "In front of a floor-to-ceiling aquarium tank",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/tech-exchange/10.webp",
+   "thumb": "/images/xp/tech-exchange/10-thumb.webp",
    "width": 1350,
    "height": 1800,
    "alt": "Back at the Golden Gate in August",

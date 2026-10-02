@@ -32,7 +32,6 @@ SETS = {
         ("B222C670", "A Spider-Man mask up close, arms reaching for the camera"),
         ("8E507E05", "The Slinky Dog coaster against a cloudy sky"),
         ("FDE46B54", "A glittering pair of Mickey ears against a blue sky"),
-        ("5D8534DE", "In front of a floor-to-ceiling aquarium tank"),
     ]),
     "rocs": ("ROCS", [
         ("533B7E5E", "Beside the projected title slide of the ROCS presentation"),
@@ -73,6 +72,7 @@ SETS = {
         ("IMG_4156", "Mirror selfie in a room of colored discs"),
         ("BE81F183", "Looking up inside an aquarium tunnel"),
         ("D46AB05D", "A silhouette at a round aquarium window"),
+        ("5D8534DE", "In front of a floor-to-ceiling aquarium tank"),
         ("IMG_7535", "Back at the Golden Gate in August"),
     ]),
     "gmis-2026": ("Gmis2026", [
