@@ -1,0 +1,13 @@
+.env.local
+.env.*.local
+.vercel
+.env*
+
+# generated: npm install and vite build recreate these
+node_modules
+dist
+
+# OS and tool caches
+.DS_Store
+__pycache__/
+*.pyc
