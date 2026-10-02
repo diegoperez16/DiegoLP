@@ -1,0 +1,7 @@
+public/models/*.blend
+public/models/*.blend1
+dist
+scripts
+graphify-out
+strix_runs
+public/music/*.flac

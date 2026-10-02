@@ -1,0 +1,554 @@
+{
+  "package.json": {
+    "mtime": 1789334564.140545,
+    "seen": 1789334708.763294,
+    "ast_hash": "6290d77b5519d793e550f51aa2db83b4",
+    "semantic_hash": ""
+  },
+  "public/models/highland-crossing.json": {
+    "mtime": 1788890225.9792435,
+    "seen": 1789330942.636079,
+    "ast_hash": "aea7737c6d403fa83d2d76de67bca4a6",
+    "semantic_hash": "aea7737c6d403fa83d2d76de67bca4a6"
+  },
+  "public/models/storybook-turntable.json": {
+    "mtime": 1788909347.686237,
+    "seen": 1789330942.63608,
+    "ast_hash": "b9685a181620e08587919152e06fa838",
+    "semantic_hash": "b9685a181620e08587919152e06fa838"
+  },
+  "scripts/blender/common.py": {
+    "mtime": 1788877457.0511768,
+    "seen": 1789330942.636081,
+    "ast_hash": "88c5f6f0ae191b45853bade48b963acd",
+    "semantic_hash": "88c5f6f0ae191b45853bade48b963acd"
+  },
+  "scripts/blender/create_hogwarts.py": {
+    "mtime": 1788890102.135138,
+    "seen": 1789330942.636082,
+    "ast_hash": "c3db305cf40d580e6e3983b24bfd3b34",
+    "semantic_hash": "c3db305cf40d580e6e3983b24bfd3b34"
+  },
+  "scripts/blender/create_storybook_turntable.py": {
+    "mtime": 1788909204.4028976,
+    "seen": 1789330942.636083,
+    "ast_hash": "6d42bc6ddc998a968ab39ea2ee86579c",
+    "semantic_hash": "6d42bc6ddc998a968ab39ea2ee86579c"
+  },
+  "scripts/blender/create_studio.py": {
+    "mtime": 1788795536.9148662,
+    "seen": 1789330942.636083,
+    "ast_hash": "fdc912de64951662d2abc8f489c13b60",
+    "semantic_hash": "fdc912de64951662d2abc8f489c13b60"
+  },
+  "scripts/blender/create_turntable.py": {
+    "mtime": 1788873333.9811442,
+    "seen": 1789330942.636084,
+    "ast_hash": "a7d376348c5332e8268b32c6ed3ea09b",
+    "semantic_hash": "a7d376348c5332e8268b32c6ed3ea09b"
+  },
+  "scripts/blender/export_web.py": {
+    "mtime": 1788795536.922687,
+    "seen": 1789330942.636085,
+    "ast_hash": "f6264c8e13937e451b5b56d0ad47b011",
+    "semantic_hash": "f6264c8e13937e451b5b56d0ad47b011"
+  },
+  "scripts/dev/cdp-click.mjs": {
+    "mtime": 1788927919.969631,
+    "seen": 1789330942.636085,
+    "ast_hash": "2a5a18f67606d434f09621e340ba6118",
+    "semantic_hash": "2a5a18f67606d434f09621e340ba6118"
+  },
+  "scripts/geo/dots.mjs": {
+    "mtime": 1788908359.1414826,
+    "seen": 1789330942.636086,
+    "ast_hash": "fef3d8671a703eeb038fe80e849d2010",
+    "semantic_hash": "fef3d8671a703eeb038fe80e849d2010"
+  },
+  "scripts/photos/cutout.swift": {
+    "mtime": 1788923871.2719266,
+    "seen": 1789330942.636086,
+    "ast_hash": "1cbde6dd3455ec8a3b2aeff6c71e3fc9",
+    "semantic_hash": "1cbde6dd3455ec8a3b2aeff6c71e3fc9"
+  },
+  "scripts/prepare_music.py": {
+    "mtime": 1788890960.6139166,
+    "seen": 1789330942.636087,
+    "ast_hash": "ce8bc905a6420947259a2ebb552c5bc5",
+    "semantic_hash": "ce8bc905a6420947259a2ebb552c5bc5"
+  },
+  "src/App.jsx": {
+    "mtime": 1789336553.6220322,
+    "seen": 1789336653.2114172,
+    "ast_hash": "864ae58a79b4d26ca8d777e10faf02ff",
+    "semantic_hash": ""
+  },
+  "src/components/HighlandCrossing.jsx": {
+    "mtime": 1788889052.0777454,
+    "seen": 1789330942.636091,
+    "ast_hash": "c05267812efa2580a7135082e144d780",
+    "semantic_hash": "c05267812efa2580a7135082e144d780"
+  },
+  "src/components/IslandGallery.jsx": {
+    "mtime": 1789045826.0885499,
+    "seen": 1789330942.636092,
+    "ast_hash": "c3c3263a7de210e3726e540ee3c010f1",
+    "semantic_hash": "c3c3263a7de210e3726e540ee3c010f1"
+  },
+  "src/components/Piano.jsx": {
+    "mtime": 1789336465.9034505,
+    "seen": 1789336653.2114198,
+    "ast_hash": "84a5bbb8805b6769c0f2e1eb6c794d2a",
+    "semantic_hash": ""
+  },
+  "src/components/StudioEnvironment.jsx": {
+    "mtime": 1788873678.1469264,
+    "seen": 1789330942.636096,
+    "ast_hash": "eca74678acb1f8dc22076dca63985fe7",
+    "semantic_hash": "eca74678acb1f8dc22076dca63985fe7"
+  },
+  "src/components/TurntableModel.jsx": {
+    "mtime": 1789334682.9151692,
+    "seen": 1789334708.763317,
+    "ast_hash": "360e7c5a3052cae11be05f58e5a39120",
+    "semantic_hash": ""
+  },
+  "src/components/VinylRecord.jsx": {
+    "mtime": 1775507959.1958866,
+    "seen": 1789330942.636097,
+    "ast_hash": "fe557bcd771178eb528feffd5d3e779a",
+    "semantic_hash": "fe557bcd771178eb528feffd5d3e779a"
+  },
+  "src/components/WorldGlobe.jsx": {
+    "mtime": 1789334561.882733,
+    "seen": 1789334708.763319,
+    "ast_hash": "7e78825e66c3703166e111fd1de13d68",
+    "semantic_hash": ""
+  },
+  "src/components/music/MusicControls.jsx": {
+    "mtime": 1789046082.19177,
+    "seen": 1789330942.636099,
+    "ast_hash": "35ff9f986ba9b7d5bdaabf3ebdb25b3b",
+    "semantic_hash": "35ff9f986ba9b7d5bdaabf3ebdb25b3b"
+  },
+  "src/components/music/MusicTurntable.jsx": {
+    "mtime": 1789046082.1907732,
+    "seen": 1789330942.636099,
+    "ast_hash": "d2888380088d3e49126ea467d2285716",
+    "semantic_hash": "d2888380088d3e49126ea467d2285716"
+  },
+  "src/data/backgroundLines.json": {
+    "mtime": 1788922515.5785937,
+    "seen": 1789330942.636102,
+    "ast_hash": "451d3079fb5d5eac2df78762a7be8d62",
+    "semantic_hash": "451d3079fb5d5eac2df78762a7be8d62"
+  },
+  "src/data/callingCard.js": {
+    "mtime": 1789335892.1331284,
+    "seen": 1789336653.211431,
+    "ast_hash": "a830cae122916257db95dbad9380bd8f",
+    "semantic_hash": ""
+  },
+  "src/data/music.json": {
+    "mtime": 1788890961.0982003,
+    "seen": 1789330942.636103,
+    "ast_hash": "406795c72c683da3a307b49f2216f73a",
+    "semantic_hash": "406795c72c683da3a307b49f2216f73a"
+  },
+  "src/data/puertoRico.js": {
+    "mtime": 1788908645.5126197,
+    "seen": 1789330942.6361039,
+    "ast_hash": "c60fcbab437dedcefbbb831f7fcfc79a",
+    "semantic_hash": "c60fcbab437dedcefbbb831f7fcfc79a"
+  },
+  "src/data/puertoRicoCoast.json": {
+    "mtime": 1788910691.7896926,
+    "seen": 1789330942.636105,
+    "ast_hash": "03d8b6c021aa19f931c6a6e413d6dc63",
+    "semantic_hash": "03d8b6c021aa19f931c6a6e413d6dc63"
+  },
+  "src/hooks/useAudioEngine.js": {
+    "mtime": 1788873788.7779436,
+    "seen": 1789330942.636114,
+    "ast_hash": "e981ba50b900719de8bfbae4ead9a0b7",
+    "semantic_hash": "e981ba50b900719de8bfbae4ead9a0b7"
+  },
+  "src/hooks/useYouTubePlayer.js": {
+    "mtime": 1788914257.1875432,
+    "seen": 1789330942.636116,
+    "ast_hash": "bfd518e0167f3e865753588c0ec85271",
+    "semantic_hash": "bfd518e0167f3e865753588c0ec85271"
+  },
+  "src/main.jsx": {
+    "mtime": 1788891176.2249515,
+    "seen": 1789330942.636116,
+    "ast_hash": "5f00613b45a0ac6440b35c5c40b4b428",
+    "semantic_hash": "5f00613b45a0ac6440b35c5c40b4b428"
+  },
+  "src/me.jsx": {
+    "mtime": 1788922647.4114923,
+    "seen": 1789330942.636117,
+    "ast_hash": "0fc8ab0ddc71afcd6bc7702a6bf31d08",
+    "semantic_hash": "0fc8ab0ddc71afcd6bc7702a6bf31d08"
+  },
+  "src/music/MusicProvider.jsx": {
+    "mtime": 1788952749.6655846,
+    "seen": 1789330942.636117,
+    "ast_hash": "8ffa2b31ecbe67a1dec9f74ccf0c5d4e",
+    "semantic_hash": "8ffa2b31ecbe67a1dec9f74ccf0c5d4e"
+  },
+  "src/pages/MePage.jsx": {
+    "mtime": 1789045826.0889924,
+    "seen": 1789330942.636118,
+    "ast_hash": "4986d6e56ae3c8238490b90cd5e68280",
+    "semantic_hash": "4986d6e56ae3c8238490b90cd5e68280"
+  },
+  "src/utils/youtubeSearch.js": {
+    "mtime": 1788913752.1942446,
+    "seen": 1789330942.6361191,
+    "ast_hash": "14a062449a55e25d889f3ac9c8f869c8",
+    "semantic_hash": "14a062449a55e25d889f3ac9c8f869c8"
+  },
+  "vite.config.js": {
+    "mtime": 1789334591.0033197,
+    "seen": 1789334708.763333,
+    "ast_hash": "fa69cc29f102f4fbc9a19fef589e4214",
+    "semantic_hash": ""
+  },
+  "public/music/web/about.mp3": {
+    "mtime": 1788890731.0765283,
+    "seen": 1789330942.63612,
+    "ast_hash": "ef303e8f52e7de7b7f567d00b4f900f5",
+    "semantic_hash": "ef303e8f52e7de7b7f567d00b4f900f5"
+  },
+  "public/music/web/contact.mp3": {
+    "mtime": 1788890730.9017234,
+    "seen": 1789330942.636121,
+    "ast_hash": "83fdd497b250b4ea449f14a10ebd6c26",
+    "semantic_hash": "83fdd497b250b4ea449f14a10ebd6c26"
+  },
+  "public/music/web/education.mp3": {
+    "mtime": 1788890727.2410061,
+    "seen": 1789330942.636121,
+    "ast_hash": "b0e7051bd6cef64f38b83bda9a55de95",
+    "semantic_hash": "b0e7051bd6cef64f38b83bda9a55de95"
+  },
+  "public/music/web/experience.mp3": {
+    "mtime": 1788890727.4231071,
+    "seen": 1789330942.6361222,
+    "ast_hash": "fd33422371408e6052672c2ec89a86a3",
+    "semantic_hash": "fd33422371408e6052672c2ec89a86a3"
+  },
+  "public/music/web/projects.mp3": {
+    "mtime": 1788890729.0500855,
+    "seen": 1789330942.636123,
+    "ast_hash": "68af7974df1f2314db36641427a6782d",
+    "semantic_hash": "68af7974df1f2314db36641427a6782d"
+  },
+  "index.html": {
+    "mtime": 1789332747.6075358,
+    "seen": 1789332980.6823401,
+    "ast_hash": "bcc40708e5cb1aa6e86c262a4163c898",
+    "semantic_hash": ""
+  },
+  "me.html": {
+    "mtime": 1788922647.408135,
+    "seen": 1789331291.1103208,
+    "ast_hash": "70c9a06f2b0354dc37b7f58d510924f5",
+    "semantic_hash": ""
+  },
+  "public/images/pr/README.txt": {
+    "mtime": 1788908645.6030958,
+    "seen": 1789331291.110322,
+    "ast_hash": "f3e2975bdf50b0091214ab13a1109552",
+    "semantic_hash": ""
+  },
+  "scripts/blender/README.md": {
+    "mtime": 1788975359.8235123,
+    "seen": 1789331291.110323,
+    "ast_hash": "b4d5b5d750343a01696dac8cb2c4000e",
+    "semantic_hash": ""
+  },
+  "scripts/geo/README.md": {
+    "mtime": 1788910762.5374808,
+    "seen": 1789331291.110324,
+    "ast_hash": "cb5d572d571e94683abc5c365153a149",
+    "semantic_hash": ""
+  },
+  "scripts/photos/README.md": {
+    "mtime": 1788988535.9057035,
+    "seen": 1789331291.110324,
+    "ast_hash": "60bf70eed2fb436ed22cf9d154b4b457",
+    "semantic_hash": ""
+  },
+  "scripts/photos/diego-clay-avatar.prompt.md": {
+    "mtime": 1788974883.391943,
+    "seen": 1789331291.110325,
+    "ast_hash": "1d5ca9ddc68c8a6de95c3b80179c2644",
+    "semantic_hash": ""
+  },
+  "public/favicon.svg": {
+    "mtime": 1788795260.5113387,
+    "seen": 1789331291.110326,
+    "ast_hash": "c352856c8209bca15cd95f7f50ecfd2e",
+    "semantic_hash": ""
+  },
+  "public/images/diego-bubble.jpg": {
+    "mtime": 1788923674.9259636,
+    "seen": 1789331291.110326,
+    "ast_hash": "e5a774946650b6ba6fe90208fad9cda3",
+    "semantic_hash": ""
+  },
+  "public/images/earth/earth-blue-marble.jpg": {
+    "mtime": 1788910207.7778358,
+    "seen": 1789331291.110327,
+    "ast_hash": "8ec81bb437b68fdb4bd46604ff698736",
+    "semantic_hash": ""
+  },
+  "public/images/earth/earth-topology.png": {
+    "mtime": 1788910207.8981192,
+    "seen": 1789331291.110328,
+    "ast_hash": "56e5c0687430c9eff705e6ffbd82ce31",
+    "semantic_hash": ""
+  },
+  "public/images/me/arcade.jpg": {
+    "mtime": 1788926321.2950318,
+    "seen": 1789331291.110328,
+    "ast_hash": "f94b000b2e493882d315ed12bf27a211",
+    "semantic_hash": ""
+  },
+  "public/images/me/atat.jpg": {
+    "mtime": 1788926788.3846502,
+    "seen": 1789331291.1103292,
+    "ast_hash": "70aaed7e548bd9a17180768ad28bacb3",
+    "semantic_hash": ""
+  },
+  "public/images/me/book.jpg": {
+    "mtime": 1788927068.3754377,
+    "seen": 1789331291.11033,
+    "ast_hash": "dc9c41be4341c3ab3e45945e73c93b7f",
+    "semantic_hash": ""
+  },
+  "public/images/me/comic.jpg": {
+    "mtime": 1788926715.0199642,
+    "seen": 1789331291.11033,
+    "ast_hash": "7139128abb5702943b0a66857f361bdb",
+    "semantic_hash": ""
+  },
+  "public/images/me/comics-stack.jpg": {
+    "mtime": 1788926321.287295,
+    "seen": 1789331291.1103308,
+    "ast_hash": "2aff7c6821f94786a9eea2faa75b5f75",
+    "semantic_hash": ""
+  },
+  "public/images/me/dog.jpg": {
+    "mtime": 1788924663.1321402,
+    "seen": 1789331291.110332,
+    "ast_hash": "715b57c32b232930600325cc5a334d2b",
+    "semantic_hash": ""
+  },
+  "public/images/me/falcon.jpg": {
+    "mtime": 1788926788.388343,
+    "seen": 1789331291.110332,
+    "ast_hash": "18cbd6f0ef55430c3b89bc98fbab7e0d",
+    "semantic_hash": ""
+  },
+  "public/images/me/family.jpg": {
+    "mtime": 1788923674.9005134,
+    "seen": 1789331291.110333,
+    "ast_hash": "4d88fbcfaa409fa7d446efe77ee1e402",
+    "semantic_hash": ""
+  },
+  "public/images/me/gryffindor.jpg": {
+    "mtime": 1788926321.2990305,
+    "seen": 1789331291.110334,
+    "ast_hash": "956d945c71ca073a726a71292206f1c4",
+    "semantic_hash": ""
+  },
+  "public/images/me/hogwarts-express.jpg": {
+    "mtime": 1788926321.3029613,
+    "seen": 1789331291.110334,
+    "ast_hash": "b1be4e8debcf3e457c63bb41c9e4e750",
+    "semantic_hash": ""
+  },
+  "public/images/me/kangol.png": {
+    "mtime": 1788923674.260059,
+    "seen": 1789331291.1103349,
+    "ast_hash": "69f3b98d42a7c35139659143569ebb72",
+    "semantic_hash": ""
+  },
+  "public/images/me/mando.jpg": {
+    "mtime": 1788926321.278895,
+    "seen": 1789331291.110336,
+    "ast_hash": "9746669dd35b0fa737e3e728fdcd15cd",
+    "semantic_hash": ""
+  },
+  "public/images/me/marvel-screen.jpg": {
+    "mtime": 1788926788.395713,
+    "seen": 1789331291.110336,
+    "ast_hash": "5e370a38b4c14bad12b283884c80247a",
+    "semantic_hash": ""
+  },
+  "public/images/me/photo-booth.jpg": {
+    "mtime": 1788924662.1824985,
+    "seen": 1789331291.110337,
+    "ast_hash": "a987ea7d967abf8fd002023250325454",
+    "semantic_hash": ""
+  },
+  "public/images/me/portrait.jpg": {
+    "mtime": 1788924662.3370922,
+    "seen": 1789331291.110338,
+    "ast_hash": "22e81cc86edaad0e70bd19d835ef1822",
+    "semantic_hash": ""
+  },
+  "public/images/me/records.jpg": {
+    "mtime": 1788924662.7052326,
+    "seen": 1789331291.1103392,
+    "ast_hash": "3afe173b73ba361993405bab7ded3083",
+    "semantic_hash": ""
+  },
+  "public/images/me/slinky.jpg": {
+    "mtime": 1788926321.2748082,
+    "seen": 1789331291.11034,
+    "ast_hash": "3c97a88d7aaf636da98069db8f3071dc",
+    "semantic_hash": ""
+  },
+  "public/images/me/spidey-crew.jpg": {
+    "mtime": 1788924662.9929655,
+    "seen": 1789331291.11034,
+    "ast_hash": "816d38a9b6a00c5775cde102fb9ad6af",
+    "semantic_hash": ""
+  },
+  "public/images/me/spidey-mask.png": {
+    "mtime": 1788923674.808376,
+    "seen": 1789331291.110341,
+    "ast_hash": "54160e3e73eb46bd96f4b85ce6ef8747",
+    "semantic_hash": ""
+  },
+  "public/images/me/xmen.jpg": {
+    "mtime": 1788926321.2828546,
+    "seen": 1789331291.1103418,
+    "ast_hash": "3512c382748cf1be348f2ab22fcd6e08",
+    "semantic_hash": ""
+  },
+  "public/images/me/young-spidey.jpg": {
+    "mtime": 1788925511.6453137,
+    "seen": 1789331291.1103418,
+    "ast_hash": "9e8d4cace9dd4da33fc97cecfea42e10",
+    "semantic_hash": ""
+  },
+  "public/images/music/about.jpg": {
+    "mtime": 1788890960.809975,
+    "seen": 1789331291.110343,
+    "ast_hash": "3c08d5ded69702cc1983a94826e9ddb4",
+    "semantic_hash": ""
+  },
+  "public/images/music/contact.jpg": {
+    "mtime": 1788890961.09149,
+    "seen": 1789331291.110344,
+    "ast_hash": "3c08d5ded69702cc1983a94826e9ddb4",
+    "semantic_hash": ""
+  },
+  "public/images/music/education.jpg": {
+    "mtime": 1788890960.8803568,
+    "seen": 1789331291.110344,
+    "ast_hash": "3c08d5ded69702cc1983a94826e9ddb4",
+    "semantic_hash": ""
+  },
+  "public/images/music/experience.jpg": {
+    "mtime": 1788890960.949976,
+    "seen": 1789331291.110345,
+    "ast_hash": "3c08d5ded69702cc1983a94826e9ddb4",
+    "semantic_hash": ""
+  },
+  "public/images/music/la-la-land.jpg": {
+    "mtime": 1788890725.4318948,
+    "seen": 1789331291.110346,
+    "ast_hash": "3c08d5ded69702cc1983a94826e9ddb4",
+    "semantic_hash": ""
+  },
+  "public/images/music/projects.jpg": {
+    "mtime": 1788890961.0184815,
+    "seen": 1789331291.110346,
+    "ast_hash": "3c08d5ded69702cc1983a94826e9ddb4",
+    "semantic_hash": ""
+  },
+  "public/images/pin.png": {
+    "mtime": 1788908088.7940824,
+    "seen": 1789331291.110347,
+    "ast_hash": "5a689d238a32462b8b42abd0b1430b04",
+    "semantic_hash": ""
+  },
+  "public/images/popcornpal-preview.jpg": {
+    "mtime": 1788928524.8266783,
+    "seen": 1789331291.110348,
+    "ast_hash": "8f5f7a51a4b19fb36af9ed81387e50bf",
+    "semantic_hash": ""
+  },
+  "public/images/pr-flag.svg": {
+    "mtime": 1788912662.5044787,
+    "seen": 1789331291.110348,
+    "ast_hash": "a369eddcc91b31afe0e706bb009122c2",
+    "semantic_hash": ""
+  },
+  "public/images/storybook-turntable.png": {
+    "mtime": 1788909347.2576783,
+    "seen": 1789331291.110349,
+    "ast_hash": "a6bd9112f0363094078ebcd3d8593832",
+    "semantic_hash": ""
+  },
+  "public/images/uprm-seal-cream.png": {
+    "mtime": 1788910946.9244473,
+    "seen": 1789331291.110351,
+    "ast_hash": "0296bb456836b3e0aa631f3e181bec67",
+    "semantic_hash": ""
+  },
+  "public/images/uprm-seal.png": {
+    "mtime": 1788910086.9294066,
+    "seen": 1789331291.1103518,
+    "ast_hash": "775e19567fb814df8a856e0e3cda6e4f",
+    "semantic_hash": ""
+  },
+  "PRODUCT.md": {
+    "mtime": 1789331424.9383385,
+    "seen": 1789332980.682339,
+    "ast_hash": "7522617b416c94b583cf42fb14bfe093",
+    "semantic_hash": ""
+  },
+  "public/images/popcornpal-home.jpg": {
+    "mtime": 1789332615.3400908,
+    "seen": 1789332980.682379,
+    "ast_hash": "43e1b9439d507b9fdc61ec2192e82a8c",
+    "semantic_hash": ""
+  },
+  "api/story.js": {
+    "mtime": 1789334682.9144628,
+    "seen": 1789334708.7632902,
+    "ast_hash": "53e78f49393484b4c971fe9f61f8016a",
+    "semantic_hash": ""
+  },
+  "src/components/Story.jsx": {
+    "mtime": 1789336507.2039304,
+    "seen": 1789336653.2114198,
+    "ast_hash": "ec5728538a0d0f8e76ce3c764e38c21b",
+    "semantic_hash": ""
+  },
+  "public/images/projects/dyw.jpg": {
+    "mtime": 1789335892.1128838,
+    "seen": 1789336653.2114859,
+    "ast_hash": "2fff13fe1be3292d5d2eba3c0fbfba12",
+    "semantic_hash": ""
+  },
+  "public/images/projects/sdshift.jpg": {
+    "mtime": 1789335054.6063766,
+    "seen": 1789336653.211487,
+    "ast_hash": "1be61268524635d261c8f2dd712ded7f",
+    "semantic_hash": ""
+  },
+  "public/images/projects/transporter.jpg": {
+    "mtime": 1789334888.2948341,
+    "seen": 1789336653.211488,
+    "ast_hash": "977b11aa93d61680a7ed8a891a85ed88",
+    "semantic_hash": ""
+  }
+}

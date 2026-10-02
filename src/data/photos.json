@@ -1,0 +1,406 @@
+{
+ "l3harris-2026": [
+  {
+   "src": "/images/xp/l3harris-2026/01.webp",
+   "thumb": "/images/xp/l3harris-2026/01-thumb.webp",
+   "width": 1800,
+   "height": 1013,
+   "alt": "Outside the L3Harris building, by the reflecting pool",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/l3harris-2026/02.webp",
+   "thumb": "/images/xp/l3harris-2026/02-thumb.webp",
+   "width": 1350,
+   "height": 1800,
+   "alt": "Selfie in the L3Harris polo and lanyard",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/l3harris-2026/03.webp",
+   "thumb": "/images/xp/l3harris-2026/03-thumb.webp",
+   "width": 1800,
+   "height": 1200,
+   "alt": "Four friends in Spider-Man masks outside a cinema",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/l3harris-2026/04.webp",
+   "thumb": "/images/xp/l3harris-2026/04-thumb.webp",
+   "width": 1800,
+   "height": 1350,
+   "alt": "Fireworks over a torii gate at night",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/l3harris-2026/05.webp",
+   "thumb": "/images/xp/l3harris-2026/05-thumb.webp",
+   "width": 900,
+   "height": 1600,
+   "alt": "In the company polo in front of the L3Harris building",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/l3harris-2026/06.webp",
+   "thumb": "/images/xp/l3harris-2026/06-thumb.webp",
+   "width": 1800,
+   "height": 1200,
+   "alt": "A Spider-Man mask up close, arms reaching for the camera",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/l3harris-2026/07.webp",
+   "thumb": "/images/xp/l3harris-2026/07-thumb.webp",
+   "width": 1200,
+   "height": 1800,
+   "alt": "The Slinky Dog coaster against a cloudy sky",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/l3harris-2026/08.webp",
+   "thumb": "/images/xp/l3harris-2026/08-thumb.webp",
+   "width": 1800,
+   "height": 1200,
+   "alt": "A glittering pair of Mickey ears against a blue sky",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/l3harris-2026/09.webp",
+   "thumb": "/images/xp/l3harris-2026/09-thumb.webp",
+   "width": 1350,
+   "height": 1800,
+   "alt": "In front of a floor-to-ceiling aquarium tank",
+   "cutout": false
+  }
+ ],
+ "rocs": [
+  {
+   "src": "/images/xp/rocs/01.webp",
+   "thumb": "/images/xp/rocs/01-thumb.webp",
+   "width": 1800,
+   "height": 1350,
+   "alt": "Beside the projected title slide of the ROCS presentation",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/rocs/02.webp",
+   "thumb": "/images/xp/rocs/02-thumb.webp",
+   "width": 1200,
+   "height": 1600,
+   "alt": "At the podium with the microphone, teammates alongside",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/rocs/03.webp",
+   "thumb": "/images/xp/rocs/03-thumb.webp",
+   "width": 1800,
+   "height": 1013,
+   "alt": "The team on stage during the acknowledgements",
+   "cutout": false
+  }
+ ],
+ "l3harris-2025": [
+  {
+   "src": "/images/xp/l3harris-2025/01.webp",
+   "thumb": "/images/xp/l3harris-2025/01-thumb.webp",
+   "width": 1350,
+   "height": 1800,
+   "alt": "Next to the L3Harris sign and its red lattice sphere",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/l3harris-2025/02.webp",
+   "thumb": "/images/xp/l3harris-2025/02-thumb.webp",
+   "width": 1200,
+   "height": 1800,
+   "alt": "Intern headshot, summer 2025",
+   "cutout": true
+  },
+  {
+   "src": "/images/xp/l3harris-2025/03.webp",
+   "thumb": "/images/xp/l3harris-2025/03-thumb.webp",
+   "width": 1350,
+   "height": 1800,
+   "alt": "Beside a LEGO Spider-Man climbing a doorway",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/l3harris-2025/04.webp",
+   "thumb": "/images/xp/l3harris-2025/04-thumb.webp",
+   "width": 1800,
+   "height": 1350,
+   "alt": "Toy Story Land under towering clouds",
+   "cutout": false
+  }
+ ],
+ "evertec": [
+  {
+   "src": "/images/xp/evertec/01.webp",
+   "thumb": "/images/xp/evertec/01-thumb.webp",
+   "width": 1800,
+   "height": 1350,
+   "alt": "The intern class in a meeting room",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/evertec/02.webp",
+   "thumb": "/images/xp/evertec/02-thumb.webp",
+   "width": 1800,
+   "height": 1350,
+   "alt": "Six of us in front of the office mural",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/evertec/03.webp",
+   "thumb": "/images/xp/evertec/03-thumb.webp",
+   "width": 1600,
+   "height": 900,
+   "alt": "With a colleague at the Evertec twenty-years sign",
+   "cutout": false
+  }
+ ],
+ "mcs": [
+  {
+   "src": "/images/xp/mcs/01.webp",
+   "thumb": "/images/xp/mcs/01-thumb.webp",
+   "width": 1350,
+   "height": 1800,
+   "alt": "Next to the opening slide of my final presentation at MCS",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/mcs/02.webp",
+   "thumb": "/images/xp/mcs/02-thumb.webp",
+   "width": 1024,
+   "height": 768,
+   "alt": "With the team at the MCS Classicare five-star sign",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/mcs/03.webp",
+   "thumb": "/images/xp/mcs/03-thumb.webp",
+   "width": 1800,
+   "height": 1350,
+   "alt": "Selfie with the team in the training room",
+   "cutout": false
+  }
+ ],
+ "pandahat": [
+  {
+   "src": "/images/xp/pandahat/01.webp",
+   "thumb": "/images/xp/pandahat/01-thumb.webp",
+   "width": 1350,
+   "height": 1800,
+   "alt": "Soldering a circuit board at the lab bench",
+   "cutout": false
+  }
+ ],
+ "team-made": [
+  {
+   "src": "/images/xp/team-made/01.webp",
+   "thumb": "/images/xp/team-made/01-thumb.webp",
+   "width": 960,
+   "height": 1571,
+   "alt": "A collage of group photos from Prepa Week 2022, the orientation week for first-year students",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/team-made/02.webp",
+   "thumb": "/images/xp/team-made/02-thumb.webp",
+   "width": 1800,
+   "height": 1350,
+   "alt": "An orientation talk in the auditorium, seen from the back rows",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/team-made/03.webp",
+   "thumb": "/images/xp/team-made/03-thumb.webp",
+   "width": 1800,
+   "height": 1350,
+   "alt": "With fellow counselors in green shirts around a table",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/team-made/04.webp",
+   "thumb": "/images/xp/team-made/04-thumb.webp",
+   "width": 1350,
+   "height": 1800,
+   "alt": "Selfie in a mask and the counselor lanyard",
+   "cutout": false
+  }
+ ],
+ "tech-exchange": [
+  {
+   "src": "/images/xp/tech-exchange/01.webp",
+   "thumb": "/images/xp/tech-exchange/01-thumb.webp",
+   "width": 1350,
+   "height": 1800,
+   "alt": "Beside a Google G made of balloons, with TECH X spelled out",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/tech-exchange/02.webp",
+   "thumb": "/images/xp/tech-exchange/02-thumb.webp",
+   "width": 1800,
+   "height": 1355,
+   "alt": "The Puerto Rico group holding the flag at the Tech Exchange closing",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/tech-exchange/03.webp",
+   "thumb": "/images/xp/tech-exchange/03-thumb.webp",
+   "width": 1350,
+   "height": 1800,
+   "alt": "The cohort lined up at the Golden Gate Bridge",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/tech-exchange/04.webp",
+   "thumb": "/images/xp/tech-exchange/04-thumb.webp",
+   "width": 1350,
+   "height": 1800,
+   "alt": "At a Golden Gate Bridge overlook",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/tech-exchange/05.webp",
+   "thumb": "/images/xp/tech-exchange/05-thumb.webp",
+   "width": 1350,
+   "height": 1800,
+   "alt": "A Google Noogler propeller hat in a display case",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/tech-exchange/06.webp",
+   "thumb": "/images/xp/tech-exchange/06-thumb.webp",
+   "width": 1350,
+   "height": 1800,
+   "alt": "Mirror selfie in a room of colored discs",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/tech-exchange/07.webp",
+   "thumb": "/images/xp/tech-exchange/07-thumb.webp",
+   "width": 1350,
+   "height": 1800,
+   "alt": "Looking up inside an aquarium tunnel",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/tech-exchange/08.webp",
+   "thumb": "/images/xp/tech-exchange/08-thumb.webp",
+   "width": 1350,
+   "height": 1800,
+   "alt": "A silhouette at a round aquarium window",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/tech-exchange/09.webp",
+   "thumb": "/images/xp/tech-exchange/09-thumb.webp",
+   "width": 1350,
+   "height": 1800,
+   "alt": "Back at the Golden Gate in August",
+   "cutout": false
+  }
+ ],
+ "gmis-2026": [
+  {
+   "src": "/images/xp/gmis-2026/01.webp",
+   "thumb": "/images/xp/gmis-2026/01-thumb.webp",
+   "width": 1350,
+   "height": 1800,
+   "alt": "Conference headshot in an olive blazer",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/gmis-2026/02.webp",
+   "thumb": "/images/xp/gmis-2026/02-thumb.webp",
+   "width": 1350,
+   "height": 1800,
+   "alt": "At the Great Minds in STEM backdrop, in a blazer",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/gmis-2026/03.webp",
+   "thumb": "/images/xp/gmis-2026/03-thumb.webp",
+   "width": 1600,
+   "height": 1066,
+   "alt": "Six of us stacked with arms out at the conference backdrop",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/gmis-2026/04.webp",
+   "thumb": "/images/xp/gmis-2026/04-thumb.webp",
+   "width": 1600,
+   "height": 1066,
+   "alt": "At the backdrop in a CAHSI shirt",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/gmis-2026/05.webp",
+   "thumb": "/images/xp/gmis-2026/05-thumb.webp",
+   "width": 1200,
+   "height": 1800,
+   "alt": "Bronze statues of Walter White and Jesse Pinkman",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/gmis-2026/06.webp",
+   "thumb": "/images/xp/gmis-2026/06-thumb.webp",
+   "width": 1200,
+   "height": 1800,
+   "alt": "A Welcome to Albuquerque banner on Route 66",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/gmis-2026/07.webp",
+   "thumb": "/images/xp/gmis-2026/07-thumb.webp",
+   "width": 1350,
+   "height": 1800,
+   "alt": "A giant Route 66 sign",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/gmis-2026/08.webp",
+   "thumb": "/images/xp/gmis-2026/08-thumb.webp",
+   "width": 1350,
+   "height": 1800,
+   "alt": "Standing in a red-lit tunnel",
+   "cutout": false
+  }
+ ],
+ "gmis-2025": [
+  {
+   "src": "/images/xp/gmis-2025/01.webp",
+   "thumb": "/images/xp/gmis-2025/01-thumb.webp",
+   "width": 1800,
+   "height": 1350,
+   "alt": "A large group in black shirts holding the Puerto Rico flag on a terrace",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/gmis-2025/02.webp",
+   "thumb": "/images/xp/gmis-2025/02-thumb.webp",
+   "width": 1800,
+   "height": 1350,
+   "alt": "The team in pink shirts with the Puerto Rico flag, laptops open",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/gmis-2025/03.webp",
+   "thumb": "/images/xp/gmis-2025/03-thumb.webp",
+   "width": 1800,
+   "height": 1080,
+   "alt": "Selfie with friends on the expo floor",
+   "cutout": false
+  },
+  {
+   "src": "/images/xp/gmis-2025/04.webp",
+   "thumb": "/images/xp/gmis-2025/04-thumb.webp",
+   "width": 1350,
+   "height": 1800,
+   "alt": "Four of us under a Howl-O-Scream sign lit in red",
+   "cutout": false
+  }
+ ]
+}

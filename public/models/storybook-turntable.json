@@ -1,0 +1,59 @@
+{
+  "generator": "Blender 5.2.1 LTS",
+  "design": "Original sculpted animated-film-style turntable: oxblood enamel, warm ivory, champagne brass and caramel oak.",
+  "platterCentreYUp": [
+    0,
+    0.048,
+    0.1
+  ],
+  "platterTopY": 0.1,
+  "discRadius": 1.4,
+  "tonearmPivotYUp": [
+    1.72,
+    0.195,
+    -1.05
+  ],
+  "bottomY": -0.665,
+  "plinthSizeYUp": [
+    4.65,
+    0.532,
+    3.98
+  ],
+  "tonearmSwingRadians": {
+    "park": 1.2102,
+    "leadIn": 1.0604,
+    "mid": 0.8797
+  },
+  "buttonMaterial": "Warm brass buttons",
+  "indicatorMaterials": [
+    "Play indicator",
+    "Cue indicator"
+  ],
+  "groups": [
+    "Plinth",
+    "Dust cover hinges",
+    "Platter",
+    "Tonearm base",
+    "Tonearm rest",
+    "Tonearm",
+    "Cue lever",
+    "Button 33",
+    "Button 45",
+    "Start stop",
+    "Status led",
+    "Cue led"
+  ],
+  "triangles": 44224,
+  "cameraPositionYUp": [
+    4.800000190734863,
+    4.449999809265137,
+    6.5
+  ],
+  "orthographicWidth": 6.75,
+  "files": {
+    "editable": "/models/storybook-turntable.blend",
+    "web": "/models/storybook-turntable.glb",
+    "render": "/images/storybook-turntable.png"
+  },
+  "renderOnly": "Album-art record and studio live in separate collections and are excluded from the GLB."
+}

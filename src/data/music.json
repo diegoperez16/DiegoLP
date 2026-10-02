@@ -1,0 +1,47 @@
+[
+  {
+    "id": "about",
+    "title": "Another Day of Sun (with Radios)",
+    "artist": "La La Land Cast",
+    "album": "La La Land: The Complete Musical Experience",
+    "audio": "/music/web/about.mp3",
+    "coverUrl": "/images/music/about.jpg",
+    "durationSeconds": 274.32
+  },
+  {
+    "id": "education",
+    "title": "City of Stars",
+    "artist": "Ryan Gosling",
+    "album": "La La Land: The Complete Musical Experience",
+    "audio": "/music/web/education.mp3",
+    "coverUrl": "/images/music/education.jpg",
+    "durationSeconds": 111.25
+  },
+  {
+    "id": "experience",
+    "title": "Herman’s Habit",
+    "artist": "Justin Hurwitz",
+    "album": "La La Land: The Complete Musical Experience",
+    "audio": "/music/web/experience.mp3",
+    "coverUrl": "/images/music/experience.jpg",
+    "durationSeconds": 110.84
+  },
+  {
+    "id": "projects",
+    "title": "Audition (The Fools Who Dream)",
+    "artist": "Emma Stone",
+    "album": "La La Land: The Complete Musical Experience",
+    "audio": "/music/web/projects.mp3",
+    "coverUrl": "/images/music/projects.jpg",
+    "durationSeconds": 252.33
+  },
+  {
+    "id": "contact",
+    "title": "City of Stars / May Finally Come True",
+    "artist": "Justin Hurwitz",
+    "album": "La La Land: The Complete Musical Experience",
+    "audio": "/music/web/contact.mp3",
+    "coverUrl": "/images/music/contact.jpg",
+    "durationSeconds": 249.96
+  }
+]

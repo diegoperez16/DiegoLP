@@ -1,30 +1,13 @@
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html, body, #root {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: #0a0a0a;
-}
-
-body {
-  font-family: 'Space Grotesk', sans-serif;
-  color: #f0ece0;
-  cursor: default;
-  user-select: none;
-}
-
-::-webkit-scrollbar {
-  width: 4px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(240, 236, 224, 0.2);
-  border-radius: 2px;
-}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+/* While a modal (project sheet, photo viewer, playlist) is open, the page behind it holds still. */
+html:has(dialog[open]) { overflow: hidden; }
+body { margin: 0; background: #f3f4f0; color: #18202e; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'DM Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+button, input, textarea, select { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+button { cursor: pointer; }
+a { color: inherit; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, [tabindex]:focus-visible { outline: 3px solid #2a4b8d; outline-offset: 4px; border-radius: 4px; }
+::selection { background: #13233f; color: #f1f3f9; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+.icon { display: inline-block; vertical-align: -.15em; flex-shrink: 0; }

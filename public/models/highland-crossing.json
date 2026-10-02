@@ -1,0 +1,71 @@
+{
+  "generator": "Blender 5.2.1 LTS",
+  "design": "Original stylised castle, viaduct and steam train modelled procedurally for Diego Perez",
+  "note": "Not a reproduction of any existing film design; geometry is generated from primitives and curves.",
+  "groups": [
+    "Terrain",
+    "Lake",
+    "Viaduct",
+    "Track",
+    "Castle",
+    "Cliff",
+    "Pines",
+    "Moon",
+    "Train"
+  ],
+  "castle": "castle 1234 by Felix Stief, scaled 11.0, placed at [16.5, 5.0, 11.5]; slab removed, windows added",
+  "trainOriginYUp": [
+    0.0,
+    7.58,
+    -0.0
+  ],
+  "trainTravelAxis": "x",
+  "trainLengthUnits": 17.4,
+  "viaductSpanYUp": [
+    -10.0,
+    10.0
+  ],
+  "deckTopYUp": 7.42,
+  "funnelMouthYUp": [
+    6.62,
+    10.68,
+    -0.0
+  ],
+  "cameraPositionYUp": [
+    -17.0,
+    8.0,
+    37.0
+  ],
+  "cameraTargetYUp": [
+    7.5,
+    5.5,
+    -5.0
+  ],
+  "castleTopYUp": [
+    16.5,
+    23.325,
+    -5.0
+  ],
+  "portalCrownYUp": [
+    7.4,
+    11.450000000000001,
+    -0.0
+  ],
+  "moonYUp": [
+    26.0,
+    27.5,
+    -30.0
+  ],
+  "litMaterials": [
+    "Lit castle window",
+    "Carriage glass",
+    "Carriage lamp",
+    "Moon",
+    "Clock face"
+  ],
+  "triangles": 146953,
+  "files": {
+    "editable": "/models/highland-crossing.blend",
+    "web": "/models/highland-crossing.glb"
+  }
+}
